@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 首页导航 -->
+    <string-array name="bottom_bar_labels">
+        <item>"妙笔"</item>
+        <item>"纯音"</item>
+        <item>"自然"</item>
+        <item>"爱听"</item>
+    </string-array>
+    <!-- 对应的图标,只需要未选中时的颜色 -->
+    <string-array name="bottom_bar_icons">
+        <item>@drawable/ic_menu_article</item>
+        <item>@drawable/ic_menu_music</item>
+        <item>@drawable/ic_menu_nature</item>
+        <item>@drawable/ic_menu_iting</item>
+    </string-array>
+
+</resources>
