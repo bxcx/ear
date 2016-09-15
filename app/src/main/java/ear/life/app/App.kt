@@ -3,6 +3,7 @@ package ear.life.app
 import com.hm.library.app.HMApp
 import com.hm.library.http.HMRequest
 import com.hm.library.http.Method
+import ear.life.http.HttpServerPath
 
 /**
  * App
@@ -15,5 +16,6 @@ class App : HMApp() {
     override fun onCreate() {
         super.onCreate()
         HMRequest.method = Method.POST
+        HMRequest.server = HttpServerPath.MAIN
     }
 }

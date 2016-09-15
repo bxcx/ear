@@ -2,6 +2,7 @@ package ear.life.ui
 
 import com.hm.library.base.BaseMainActivity
 import ear.life.R
+import ear.life.ui.article.ArticleListFragment
 import kotlinx.android.synthetic.main.activity_main_tab.*
 
 class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab) : BaseMainActivity() {
@@ -10,7 +11,11 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
 
     override fun setUIParams() {
         titles = resources.getStringArray(R.array.bottom_bar_labels)
-        titles.forEach { mTabs.add(BlankFragment()) }
+        titles.forEachIndexed { index, title ->
+            if (index == 0)
+                mTabs.add(ArticleListFragment())
+            mTabs.add(BlankFragment())
+        }
     }
 
     override fun initComplete() {
