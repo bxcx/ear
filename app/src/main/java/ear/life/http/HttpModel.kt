@@ -20,3 +20,42 @@ open class BaseModel : HMModel() {
     override var message: String = ""
         get() = error
 }
+
+/**
+ * 用户
+ *
+ */
+class UserModel(var id: Int,
+                var slug: String,
+                var name: String,
+                var first_name: String,
+                var last_name: String,
+                var nickname: String,
+                var url: String,
+                var description: String
+)
+
+
+/**
+ * 评论
+ *
+ */
+class CommentModel(var id: Int,
+                   var slug: String,
+                   var name: String,
+                   var url: String,
+                   var date: String,
+                   var content: String,
+                   var parent: Int,
+                   var author: UserModel
+)
+
+/**
+ * 附加图片
+ *
+ */
+class AttachmentModel(var id: Int, var url: String, var images: ImagesModel)
+
+class ImagesModel(var full: ImageModel, var thumbnail: ImageModel, var medium: ImageModel, var medium_large: ImageModel, var large: ImageModel, var post_thumbnail: ImageModel)
+
+class ImageModel(var url: String, var width: Int, var height: Int)
