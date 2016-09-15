@@ -26,7 +26,7 @@ class ArticleListFragment(override var itemResID: Int = R.layout.item_article) :
     }
 
     override fun getView(parent: ViewGroup?, position: Int): ArticleHolder = ArticleHolder(getItemView(parent))
-
+ 
 }
 
 
