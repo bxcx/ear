@@ -1,0 +1,50 @@
+<RelativeLayout android:id="@+id/layout_content"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:att="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical">
+
+    <com.hm.library.resource.tabstrip.PagerSlidingTabStrip
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_toLeftOf="@+id/iv_plus"
+        android:background="@color/colorPrimary"
+        android:fillViewport="false"
+        att:pstsDividerColor="@android:color/transparent"
+        att:pstsIndicatorColor="@android:color/white"
+        att:pstsIndicatorHeight="5dp"
+        att:pstsUnderlineColor="@android:color/transparent"
+        att:zmsSelectedTabTextSize="16sp"
+        att:zmsTabTextColor="@color/tabstrip_title_color"
+        att:zmsTabTextSize="14sp"
+        />
+
+    <com.balysv.materialripple.MaterialRippleLayout
+        android:id="@+id/iv_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentRight="true"
+        att:mrl_rippleColor="#ffffff"
+        att:mrl_rippleDelayClick="true"
+        att:mrl_rippleOverlay="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+
+            android:background="@color/colorPrimary"
+            android:padding="3dp"
+            android:scaleType="center"
+            android:src="@drawable/icon_plus"/>
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs"/>
+
+</RelativeLayout>
