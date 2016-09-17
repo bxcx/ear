@@ -5,21 +5,6 @@
               android:background="#ffffff"
               android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="妙笔"
-            android:textColor="@color/white"
-            android:textSize="18sp"/>
-    </RelativeLayout>
-
     <com.hm.library.resource.view.SViewPager
         android:id="@id/main_viewpager"
         android:layout_width="match_parent"

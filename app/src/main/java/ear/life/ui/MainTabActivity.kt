@@ -1,21 +1,25 @@
 package ear.life.ui
 
+import android.app.Activity
+import android.content.Intent
 import com.hm.library.base.BaseMainActivity
+import com.hm.library.resource.draggridview.DragGridActivity
 import ear.life.R
 import ear.life.ui.article.ArticleFragment
 import kotlinx.android.synthetic.main.activity_main_tab.*
 
 class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab) : BaseMainActivity() {
 
-    lateinit var titles: Array<String>
+    //妙笔
+    lateinit var articleFragment: ArticleFragment
 
     override fun setUIParams() {
-        titles = resources.getStringArray(R.array.bottom_bar_labels)
-        titles.forEachIndexed { index, title ->
-            if (index == 0)
-                mTabs.add(ArticleFragment())
-            mTabs.add(BlankFragment())
-        }
+        articleFragment = ArticleFragment()
+
+        mTabs.add(articleFragment)
+        mTabs.add(BlankFragment())
+        mTabs.add(BlankFragment())
+        mTabs.add(BlankFragment())
     }
 
     override fun initComplete() {
@@ -29,7 +33,14 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
         main_tabpage.setStyle(true, true)
     }
 
-    override fun onTabSelected(index: Int) {
-        tv_title.text = titles[index]
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                DragGridActivity.Selection -> {
+                    articleFragment.onActivityResult(requestCode, resultCode, data)
+                }
+            }
+        }
     }
 }
