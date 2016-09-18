@@ -1,6 +1,7 @@
 package ear.life.http
 
 import com.hm.library.http.HMModel
+import java.io.Serializable
 
 /**
  * HttpBase
@@ -33,7 +34,7 @@ class UserModel(var id: Int,
                 var nickname: String,
                 var url: String,
                 var description: String
-)
+): Serializable
 
 
 /**
@@ -48,14 +49,14 @@ class CommentModel(var id: Int,
                    var content: String,
                    var parent: Int,
                    var author: UserModel
-)
+): Serializable
 
 /**
  * 附加图片
  *
  */
-class AttachmentModel(var id: Int, var url: String, var images: ImagesModel)
+class AttachmentModel(var id: Int, var url: String, var images: ImagesModel): Serializable
 
-class ImagesModel(var full: ImageModel, var thumbnail: ImageModel, var medium: ImageModel, var medium_large: ImageModel, var large: ImageModel, var post_thumbnail: ImageModel)
+class ImagesModel(var full: ImageModel, var thumbnail: ImageModel, var medium: ImageModel, var medium_large: ImageModel, var large: ImageModel, var post_thumbnail: ImageModel): Serializable
 
-class ImageModel(var url: String, var width: Int, var height: Int)
+class ImageModel(var url: String, var width: Int, var height: Int): Serializable

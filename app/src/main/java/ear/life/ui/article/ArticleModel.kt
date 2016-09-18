@@ -4,12 +4,16 @@ import android.text.TextUtils
 import android.view.View
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.expansion.show
+import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
 import ear.life.http.AttachmentModel
 import ear.life.http.BaseModel
 import ear.life.http.CommentModel
 import ear.life.http.UserModel
+import ear.life.ui.article.ArticleDetailActivity
 import kotlinx.android.synthetic.main.item_article.view.*
+import org.jetbrains.anko.onClick
+import java.io.Serializable
 import java.util.*
 
 class CategorieListModel : BaseModel() {
@@ -23,7 +27,7 @@ class CategorieListModel : BaseModel() {
                          var description: String,
                          var parent: Int,
                          var post_count: Int
-    )
+    ): Serializable
 }
 
 class ArticleListModel(var posts: ArrayList<ArticleModel>) : BaseModel() {
@@ -52,13 +56,13 @@ class ArticleListModel(var posts: ArrayList<ArticleModel>) : BaseModel() {
             var _excerpt: String?,
             var _categories: ArrayList<CategorieListModel.CategorieModel>?,
             var _likeCount: String?
-    )
+    ) : Serializable
 
     class Custom_Article_Fields(var views: ArrayList<String>,
                                 var mp3_title: ArrayList<String>,
                                 var mp3_author: ArrayList<String>,
                                 var mp3_address: ArrayList<String>
-    )
+    ): Serializable
 
 }
 
@@ -94,6 +98,10 @@ class ArticleHolder(itemView: View) : BaseViewHolder<ArticleListModel.ArticleMod
 
         if (data.attachments != null && data.attachments!!.size > 0) {
             itemView.iv_img.show(data.attachments!![0].images.thumbnail.url)
+        }
+
+        itemView.layout.onClick {
+            context.startActivity<ArticleDetailActivity>(ArgumentUtil.OBJ to data)
         }
     }
 }
