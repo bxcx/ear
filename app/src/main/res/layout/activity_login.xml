@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:att="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/login"/>
+
+    <View
+        android:id="@+id/center"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/center"
+        android:layout_margin="40dp">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/ed_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入耳朵账号"
+            android:singleLine="true"
+            android:textSize="16sp"
+            att:met_baseColor="#ffffff"
+            att:met_clearButton="true"
+            att:met_floatingLabel="highlight"
+            att:met_floatingLabelText="账号"
+            att:met_floatingLabelTextColor="@color/colorPrimary"
+            att:met_iconLeft="@drawable/icon_id"
+            att:met_primaryColor="@color/colorPrimary"
+            att:met_textColorHint="#c0c0c0"
+            att:met_underlineColor="@color/colorPrimary"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/ed_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ed_id"
+            android:hint="请输入密码"
+            android:password="true"
+            android:singleLine="true"
+            android:textSize="16sp"
+            att:met_baseColor="#ffffff"
+            att:met_floatingLabel="highlight"
+            att:met_floatingLabelText="密码"
+            att:met_floatingLabelTextColor="@color/colorPrimary"
+            att:met_iconLeft="@drawable/icon_pwd"
+            att:met_primaryColor="@color/colorPrimary"
+            att:met_textColorHint="#c0c0c0"
+            att:met_underlineColor="@color/colorPrimary"/>
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/ed_pwd"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:text="登录"
+            att:animate="false"
+            att:rippleSpeed="10"/>
+
+        <com.gc.materialdesign.views.ButtonFlat
+            android:id="@+id/btn_forget"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_below="@+id/btn_login"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:text="忘记密码"/>
+
+        <com.gc.materialdesign.views.ButtonFlat
+            android:id="@+id/btn_reg"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btn_login"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:text="注册新用户"/>
+    </RelativeLayout>
+</RelativeLayout>

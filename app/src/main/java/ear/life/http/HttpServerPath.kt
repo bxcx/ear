@@ -7,5 +7,5 @@ package ear.life.http
  * version V1.0
  */
 object HttpServerPath {
-    val MAIN = "http://ear.life"
+    val MAIN = "https://ear.life"
 }

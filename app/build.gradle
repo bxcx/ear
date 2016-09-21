@@ -32,5 +32,10 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.github.bxcx:HMLibrary:v0.0.6t'
+    compile 'com.github.bxcx:HMLibrary:v0.0.6w'
+
+    //https://github.com/Cutta/GifView
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
+    //https://github.com/rengwuxian/MaterialEditText
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }
