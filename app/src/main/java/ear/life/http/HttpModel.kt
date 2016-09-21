@@ -33,9 +33,11 @@ class UserModel(var id: Int,
                 var name: String,
                 var first_name: String,
                 var last_name: String,
+                var username: String,
                 var nickname: String,
                 var url: String,
                 var avatar: String,
+                var email: String,
                 var description: String
 ) : Serializable
 

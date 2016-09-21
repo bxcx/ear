@@ -1,26 +1,30 @@
 package ear.life.ui.article
 
+import android.app.Dialog
 import android.content.Context
-import android.media.AudioManager
-import android.media.MediaPlayer
-import android.net.http.SslError
-import android.view.View
-import android.view.ViewGroup
+import android.text.TextUtils
+import android.view.*
 import android.webkit.*
+import android.widget.EditText
+import com.gc.materialdesign.views.ButtonFlat
 import com.hm.hmlibrary.ui.common.article.ArticleListModel.ArticleModel
 import com.hm.library.base.BaseListActivity
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.http.HMRequest
+import com.hm.library.resource.view.TipsToast.TipType
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
-import com.orhanobut.logger.Logger
 import ear.life.R
+import ear.life.app.App
 import ear.life.http.BaseModel
 import ear.life.http.CommentModel
+import ear.life.ui.LoginActivity
 import ear.life.ui.article.ArticleDetailActivity.CommentHolder
 import kotlinx.android.synthetic.main.activity_article_detail.*
 import kotlinx.android.synthetic.main.item_comment.view.*
+import org.jetbrains.anko.ctx
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.startActivity
 import java.util.*
 
 class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
@@ -39,6 +43,9 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         if (extras.containsKey(ArgumentUtil.OBJ))
             article = intent.getSerializableExtra(ArgumentUtil.OBJ) as ArticleModel
         title = article?.title
+        if (article == null) {
+            finish()
+        }
         return article != null
     }
 
@@ -61,128 +68,45 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
         showLoadProgerss()
 
-        webView!!.setWebChromeClient(MyWebChromeClient())
-        webView!!.setWebViewClient(MyWebViewClient())
+        webView!!.setWebChromeClient(object : WebChromeClient() {
+
+        })
+
+        webView!!.setWebViewClient(object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                view.loadUrl(url)
+                return false
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                cancelLoadProgerss()
+                runDelayed({
+                    //经过测试, 在android6.0+的系统中, 音乐没有自动播放,
+                    //这里用js代码找到播放按钮, 调用其点击事件以播放
+                    val js = "javascript:(" +
+                            "function(){ " +
+                            "var aEle=document.getElementsByTagName('div');" +
+                            "for(var i=0;i<aEle.length;i++) { " +
+                            "if(aEle[i].className=='wp-player-list'){" +
+                            "aEle[i].focus(); " +
+                            "var alist = aEle[i].getElementsByTagName('*');" +
+                            "for(var j=0;j<3;j++) { " +
+                            "alist[j].focus(); alist[j].click();" +
+                            "}" +
+                            "break;" +
+                            "}" +
+                            "}" +
+                            "}()) "
+                    webView!!.loadUrl(js)
+                }, 3000)
+
+                //webView嵌套有时会出现大面积空白, 所以在加载完成后, 重新设置一下它的高度
+                webView!!.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
+
+            }
+        })
         fragment!!.recyclerView!!.addHeaderView(webView)
-    }
-
-    private inner class MyWebViewClient : WebViewClient(), MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnErrorListener, MediaPlayer.OnVideoSizeChangedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
-
-        override fun onSeekComplete(p0: MediaPlayer?) {
-            Logger.e("onSeekComplete")
-        }
-
-        override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
-            Logger.e("onError")
-            return false
-        }
-
-        override fun onVideoSizeChanged(p0: MediaPlayer?, p1: Int, p2: Int) {
-        }
-
-        override fun onCompletion(p0: MediaPlayer?) {
-            Logger.e("onCompletion")
-        }
-
-        override fun onPrepared(p0: MediaPlayer?) {
-            Logger.e("onPrepared")
-        }
-
-        override fun onBufferingUpdate(p0: MediaPlayer?, p1: Int) {
-            Logger.e("onBufferingUpdate")
-        }
-
-        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-//                super.onReceivedError(view, request, error)
-            Logger.e("onReceivedError :" + error.toString())
-        }
-
-        override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
-//                super.onReceivedHttpError(view, request, errorResponse)
-            Logger.e("onReceivedError :" + errorResponse.toString())
-        }
-
-        override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
-            super.onReceivedSslError(view, handler, error)
-            Logger.e("onReceivedSslError :" + error.toString())
-        }
-
-        override fun onReceivedError(view: WebView, errorCode: Int,
-                                     description: String, failingUrl: String) {
-            // Auto-generated method stub
-            super.onReceivedError(view, errorCode, description, failingUrl)
-            Logger.e("onReceivedError2 :" + description)
-        }
-
-        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            view.loadUrl(url)
-            return false
-        }
-
-        override fun onPageFinished(view: WebView?, url: String?) {
-            super.onPageFinished(view, url)
-            cancelLoadProgerss()
-            runDelayed({
-
-                //经过测试, 在android6.0+的系统中, 音乐没有自动播放,
-                //这里用js代码找到播放按钮, 调用其点击事件以播放
-                val js = "javascript:(" +
-                        "function(){ " +
-                        "var aEle=document.getElementsByTagName('div');" +
-                        "for(var i=0;i<aEle.length;i++) { " +
-                        "if(aEle[i].className=='wp-player-list'){" +
-                        "aEle[i].focus(); " +
-                        "var alist = aEle[i].getElementsByTagName('*');" +
-                        "for(var j=0;j<3;j++) { " +
-                        "alist[j].focus(); alist[j].click();" +
-                        "}" +
-                        "break;" +
-                        "}" +
-                        "}" +
-                        "}()) "
-                webView!!.loadUrl(js)
-            }, 3000)
-
-            //webView嵌套有时会出现大面积空白, 所以在加载完成后, 重新设置一下它的高度
-            webView!!.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
-
-        }
-    }
-
-    private inner class MyWebChromeClient : WebChromeClient(), MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnErrorListener, MediaPlayer.OnVideoSizeChangedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
-
-        override fun onSeekComplete(p0: MediaPlayer?) {
-            Logger.e("onSeekComplete")
-        }
-
-        override fun onError(p0: MediaPlayer?, p1: Int, p2: Int): Boolean {
-            Logger.e("onError")
-            return false
-        }
-
-        override fun onVideoSizeChanged(p0: MediaPlayer?, p1: Int, p2: Int) {
-        }
-
-        override fun onCompletion(p0: MediaPlayer?) {
-            Logger.e("onCompletion")
-        }
-
-        override fun onPrepared(p0: MediaPlayer?) {
-            Logger.e("onPrepared")
-        }
-
-        override fun onBufferingUpdate(p0: MediaPlayer?, p1: Int) {
-            Logger.e("onBufferingUpdate")
-        }
-
-        override fun onProgressChanged(view: WebView, progress: Int) {
-            Logger.e("$progress")
-        }
-
-        override fun onConsoleMessage(cm: ConsoleMessage): Boolean {
-            // Spit out lots of console messages here
-            return true
-        }
     }
 
     @JavascriptInterface
@@ -211,43 +135,39 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     override fun initUI() {
         super.initUI()
         iv_collect.onClick {
-            val params = HashMap<String, Any>()
-            params.put("json", "user/generate_auth_cookie")
-            params.put("username", "admin")
-            params.put("password", "asas4444")
+            if (App.cookie == null) {
+                showTips(TipType.Warning, "请先登录")
+                startActivity<LoginActivity>()
+                return@onClick
+            }
 
-            HMRequest.go<BaseModel>("https://ear.life", params) { }
+            showComment("", "请输入评论内容")
         }
 
+    }
 
-//        iv_share.onClick {
-//            LogcatHelper.getInstance(this).start()
+    fun showComment(replayId: String, hint: String) {
+        val dialog = DialogComment(ctx, "提交", hint)
+        dialog.setCommentClicker(View.OnClickListener {
+            val content = dialog.ed_comment.getText().toString().trim()
+            if (TextUtils.isEmpty(content)) {
+                showTips(R.drawable.tips_warning, "请输入评论")
+                return@OnClickListener
+            }
+            dialog.cancel()
+            doComment(content, -1)
+        })
 
-//        async() {
-//            Logger.e("!!!")
-//            val process = Runtime.getRuntime().exec("logcat ")
-//            val bufferedReader = BufferedReader(
-//                    InputStreamReader(process.inputStream))
-//
-//            val log = StringBuilder()
-//            var line: String = ""
-//
-//            while (b || line.contains("url")) {
-//                line = bufferedReader.readLine()
-//                log.append(line)
-//
-//                runOnUiThread {
-//                    tv_test.text = log.toString() + "\n"
-//                }
-//            }
-//
-//
-//        }
+        dialog.show()
+    }
 
-        val a = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        a.requestAudioFocus({ Logger.e("$it") }, AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
-//        }
+    fun doComment(content: String, replayId: Int) {
+        val params = App.createNameAndEmailParams
+        params.put("json", "respond/submit_comment")
+        params.put("post_id", article!!.id!!)
+        params.put("content", content)
+
+        HMRequest.go<BaseModel>("https://ear.life", params) { }
     }
 
     override fun getView(parent: ViewGroup?, position: Int): CommentHolder = CommentHolder(getItemView(parent))
@@ -276,5 +196,55 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         super.onDestroy()
     }
 
+    class DialogComment(internal var context: Context, btText: String, hint: String) {
+
+
+        private val dialog: Dialog
+        lateinit var ed_comment: EditText
+        lateinit var btn_comment: ButtonFlat
+
+        init {
+            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val display = windowManager.defaultDisplay
+            // 获取Dialog布局
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null)
+            ed_comment = view.findViewById(R.id.ed_comment) as EditText
+            btn_comment = view.findViewById(R.id.btn_comment) as ButtonFlat
+            ed_comment.hint = hint
+            btn_comment.text = btText
+            // 设置Dialog最小宽度为屏幕宽度
+            view.minimumWidth = display.width
+
+            // 定义Dialog布局和参数
+            dialog = Dialog(context, R.style.ActionSheetDialogStyle)
+            dialog.setCancelable(true)
+            dialog.setCanceledOnTouchOutside(true)
+            dialog.setContentView(view)
+
+            val win = dialog.window
+            win.decorView.setPadding(0, 0, 0, 0)
+            win.setGravity(Gravity.BOTTOM)
+            val lp = win.attributes
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            win.attributes = lp
+
+        }
+
+        fun show() {
+            dialog.show()
+//            btn_comment.postDelayed(Runnable { ViewTool.showSoftInput(ed_comment) }, 100)
+        }
+
+        fun cancel() {
+            dialog.cancel()
+        }
+
+        fun setCommentClicker(l: View.OnClickListener) {
+            btn_comment.setOnClickListener(l)
+        }
+
+
+    }
 
 }

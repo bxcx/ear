@@ -5,6 +5,7 @@ import com.hm.library.base.BaseActivity
 import com.hm.library.http.HMRequest
 import com.hm.library.resource.view.TipsToast.TipType
 import ear.life.R
+import ear.life.app.App
 import ear.life.http.CookieModel
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.onClick
@@ -21,6 +22,8 @@ class LoginActivity : BaseActivity() {
 
     override fun initUI() {
         super.initUI()
+
+        ed_pwd.setText("Zkb@2)Ci0OAe)IWVpf8X%IkN")
 
         btn_login.onClick {
             val username = ed_id.text.trim().toString()
@@ -42,7 +45,9 @@ class LoginActivity : BaseActivity() {
                         showTips(TipType.Error, "账号或密码错误")
                     } else {
                         //登录成功, 可在本地缓存cookie, 并更新HMRequest中默认的params
-                        showToast(it.cookie)
+                        App.updateCookie(it)
+                        showTips(TipType.Success, "登录成功")
+                        finish(500)
                     }
                 }
             } else {

@@ -13,18 +13,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/layout_comment"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:background="#ff0000">
-
-        <TextView
-            android:id="@+id/tv_test"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffff"/>
-    </ScrollView>
-
     <RelativeLayout
         android:id="@+id/layout_comment"
         android:layout_width="match_parent"

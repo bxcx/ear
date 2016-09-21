@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:att="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:minHeight="52dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#c6cfdb"/>
+
+    <EditText
+        android:id="@+id/ed_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:layout_toLeftOf="@+id/btn_comment"
+        android:background="@drawable/shape_corner_whitebg_greyborder"
+        android:gravity="center_vertical"
+        android:maxLines="5"
+        android:minHeight="31dp"
+        android:padding="8dp"
+        android:textColor="#333333"
+        android:textColorHint="#d9dce0"
+        android:textSize="14sp"/>
+
+    <com.gc.materialdesign.views.ButtonFlat
+        android:id="@+id/btn_comment"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="提交"
+        android:textColor="#81c2f8"
+        android:textSize="14sp"/>
+
+
+</RelativeLayout>

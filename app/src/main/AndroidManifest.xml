@@ -47,16 +47,16 @@
         <activity
             android:name=".ui.MainTabActivity"
             android:theme="@style/MainTheme">
-
-        </activity>
-        <activity android:name="com.hm.library.resource.draggridview.DragGridActivity"/>
-        <activity android:name=".ui.article.ArticleDetailActivity"/>
-        <activity android:name=".ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name="com.hm.library.resource.draggridview.DragGridActivity"/>
+        <activity android:name=".ui.article.ArticleDetailActivity"/>
+        <activity android:name=".ui.LoginActivity">
+
         </activity>
     </application>
 
