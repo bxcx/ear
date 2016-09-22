@@ -3,15 +3,15 @@ package ear.life.ui.article
 
 import android.os.Bundle
 import android.view.ViewGroup
+import com.hm.hmlibrary.ui.common.article.Article
 import com.hm.hmlibrary.ui.common.article.ArticleHolder
 import com.hm.hmlibrary.ui.common.article.ArticleListModel
-import com.hm.hmlibrary.ui.common.article.ArticleListModel.ArticleModel
 import com.hm.library.base.BaseListFragment
 import com.hm.library.http.HMRequest
 import com.hm.library.util.ArgumentUtil
 import ear.life.R
 
-class ArticleListFragment(override var itemResID: Int = R.layout.item_article) : BaseListFragment<ArticleModel, ArticleHolder>() {
+class ArticleListFragment(override var itemResID: Int = R.layout.item_article) : BaseListFragment<Article, ArticleHolder>() {
 
     companion object {
         fun newInstance(id: Int): ArticleListFragment {

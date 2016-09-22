@@ -27,46 +27,52 @@ class CategorieListModel : BaseModel() {
                          var description: String,
                          var parent: Int,
                          var post_count: Int
-    ): Serializable
+    ) : Serializable
 }
 
-class ArticleListModel(var posts: ArrayList<ArticleModel>) : BaseModel() {
+class ArticleModel(var post: Article) : BaseModel()
 
-    class ArticleModel(
-            var id: Int?,
-            var type: String?,
-            var slug: String?,
-            var url: String?,
-            var status: String?,
-            var title: String?,
-            var title_plain: String?,
-            var content: String?,
-            var excerpt: String?,
-            var date: String?,
-            var modified: String?,
-            var categories: ArrayList<CategorieListModel.CategorieModel>?,
-            var tags: ArrayList<CategorieListModel.CategorieModel>?,
-            var author: UserModel?,
-            var comments: ArrayList<CommentModel>?,
-            var attachments: ArrayList<AttachmentModel>?,
-            var comment_count: Int?,
-            var comment_status: String?,
-            var custom_fields: Custom_Article_Fields?,
+class ArticleListModel(var posts: ArrayList<Article>) : BaseModel() {
 
-            var _excerpt: String?,
-            var _categories: ArrayList<CategorieListModel.CategorieModel>?,
-            var _likeCount: String?
-    ) : Serializable
 
     class Custom_Article_Fields(var views: ArrayList<String>,
                                 var mp3_title: ArrayList<String>,
                                 var mp3_author: ArrayList<String>,
                                 var mp3_address: ArrayList<String>
-    ): Serializable
+    ) : Serializable
 
 }
 
-class ArticleHolder(itemView: View) : BaseViewHolder<ArticleListModel.ArticleModel>(itemView) {
+class Article(
+        var id: Int?,
+        var type: String?,
+        var slug: String?,
+        var url: String?,
+        var status: String?,
+        var title: String?,
+        var title_plain: String?,
+        var content: String?,
+        var excerpt: String?,
+        var date: String?,
+        var modified: String?,
+        var categories: ArrayList<CategorieListModel.CategorieModel>?,
+        var tags: ArrayList<CategorieListModel.CategorieModel>?,
+        var author: UserModel?,
+        var comments: ArrayList<CommentModel>?,
+        var attachments: ArrayList<AttachmentModel>?,
+        var comment_count: Int?,
+        var comment_status: String?,
+        var custom_fields: ArticleListModel.Custom_Article_Fields?,
+
+        var _excerpt: String?,
+        var _categories: ArrayList<CategorieListModel.CategorieModel>?,
+        var _likeCount: String?
+) : Serializable {
+    var _url: String? = ""
+        get() = url?.replace("https://", "http://")
+}
+
+class ArticleHolder(itemView: View) : BaseViewHolder<Article>(itemView) {
 
     override fun setContent(position: Int) {
 

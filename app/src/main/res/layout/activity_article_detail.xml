@@ -25,6 +25,7 @@
         android:paddingTop="5dp">
 
         <TextView
+            android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
@@ -41,7 +42,7 @@
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/iv_collect"
+            android:layout_toLeftOf="@+id/layout_collect"
             att:mrl_rippleAlpha="0.1"
             att:mrl_rippleColor="#00bb9c"
             att:mrl_rippleOverlay="true">
@@ -68,14 +69,15 @@
                     android:layout_marginTop="5dp"
                     android:background="@drawable/update_hint"
                     android:gravity="center"
-                    android:text="111"
+                    android:text="0"
                     android:textColor="#ffffff"
-                    android:textSize="6sp"/>
+                    android:textSize="6sp"
+                    android:visibility="gone"/>
             </RelativeLayout>
         </com.balysv.materialripple.MaterialRippleLayout>
 
         <com.balysv.materialripple.MaterialRippleLayout
-            android:id="@+id/iv_collect"
+            android:id="@+id/layout_collect"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
@@ -85,6 +87,7 @@
             att:mrl_rippleOverlay="true">
 
             <ImageView
+                android:id="@+id/iv_collect"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"

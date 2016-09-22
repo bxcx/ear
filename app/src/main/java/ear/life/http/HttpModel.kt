@@ -15,14 +15,15 @@ open class BaseModel : HMModel() {
     var error: String = ""
 
     //数据是否正确
-    override var valid: Boolean = false
+    override var hm_valid: Boolean = false
         get() = "ok".equals(status)
     //相应提示
-    override var message: String = ""
+    override var hm_message: String = ""
         get() = error
 }
 
 class CookieModel(var cookie: String, var cookie_name: String, var user: UserModel) : BaseModel()
+class CookieValidModel(var valid: Boolean) : BaseModel()
 
 /**
  * 用户
@@ -57,6 +58,8 @@ class CommentModel(var id: Int,
 ) : Serializable {
 
 }
+
+class FavoriteModel(var before: Boolean, var after: Boolean) : BaseModel()
 
 /**
  * 附加图片
