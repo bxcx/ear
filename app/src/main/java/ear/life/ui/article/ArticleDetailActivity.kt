@@ -9,7 +9,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.EditText
-import com.gc.materialdesign.views.ButtonFlat
 import com.hm.hmlibrary.ui.common.article.Article
 import com.hm.hmlibrary.ui.common.article.ArticleModel
 import com.hm.library.base.BaseListActivity
@@ -17,6 +16,8 @@ import com.hm.library.base.BaseViewHolder
 import com.hm.library.http.HMRequest
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
+import com.orhanobut.logger.Logger
+import com.rey.material.widget.Button
 import ear.life.R
 import ear.life.app.App
 import ear.life.extension.hideSoftInput
@@ -79,7 +80,8 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                cancelLoadProgerss()
+                //延迟至loadData
+                //cancelLoadProgerss()
                 runDelayed({
                     //经过测试, 在android6.0+的系统中, 音乐没有自动播放,
                     //这里用js代码找到播放按钮, 调用其点击事件以播放
@@ -108,39 +110,49 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         fragment!!.recyclerView!!.addHeaderView(webView)
     }
 
+    var hasResize = false
     @JavascriptInterface
     fun resize(height: Float) {
         runOnUIThread({
+            Logger.e("${height * resources.displayMetrics.density}")
             webView.layoutParams.width = resources.displayMetrics.widthPixels
             webView.layoutParams.height = (height * resources.displayMetrics.density).toInt()
+            hasResize = true
+            fragment!!.loadRefresh()
+
         })
     }
 
     override fun loadData() {
-
+        //在webView高度不确定前不设置评论数据
+        if (!hasResize) {
+            loadCompleted(arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null)))
+            return
+        }
         var params = App.createParams
         params.put("json", "get_post")
         params.put("id", article?.id!!)
         HMRequest.go<ArticleModel>(params = params) {
             var comments = it?.post?.comments
+
+            if (comments?.size == 0) {
+                tv_comment_count.visibility = View.GONE
+            } else {
+                tv_comment_count.visibility = View.VISIBLE
+                tv_comment_count.text = "${comments?.size}"
+            }
+
             comments?.sortByDescending { it.id }
             if (comments == null || comments.size == 0) {
                 comments = arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null))
             }
             loadCompleted(comments)
 
+            cancelLoadProgerss()
             if (gotoComment) {
                 gotoComment = false
                 fragment!!.recyclerView!!.recyclerView.scrollBy(0, webView.layoutParams.height)
             }
-
-            if (comments.size == 0) {
-                tv_comment_count.visibility = View.GONE
-            } else {
-                tv_comment_count.visibility = View.VISIBLE
-                tv_comment_count.text = "${comments.size}"
-            }
-
         }
     }
 
@@ -194,17 +206,18 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     }
 
     fun doComment(content: String, replayId: Int) {
-        val params = App.createNameAndEmailParams
-        params.put("json", "respond/submit_comment")
+        val params = App.createParams
+        params.put("json", "user/post_comment")
         params.put("post_id", article!!.id!!)
         params.put("content", content)
+        params.put("comment_status", 1)
         showLoading()
 
         HMRequest.go<BaseModel>(params = params, activity = this) {
             cancelLoading()
             showToast("发表成功")
-            fragment!!.loadRefresh()
             gotoComment = true
+            fragment!!.loadRefresh()
         }
     }
 
@@ -250,7 +263,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
         private val dialog: Dialog
         lateinit var ed_comment: EditText
-        lateinit var btn_comment: ButtonFlat
+        lateinit var btn_comment: Button
 
         init {
             val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -258,7 +271,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             // 获取Dialog布局
             val view = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null)
             ed_comment = view.findViewById(R.id.ed_comment) as EditText
-            btn_comment = view.findViewById(R.id.btn_comment) as ButtonFlat
+            btn_comment = view.findViewById(R.id.btn_comment) as Button
             ed_comment.hint = hint
             btn_comment.text = btText
             // 设置Dialog最小宽度为屏幕宽度

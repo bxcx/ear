@@ -27,17 +27,17 @@
         android:textColorHint="#d9dce0"
         android:textSize="14sp"/>
 
-    <com.gc.materialdesign.views.ButtonFlat
+    <com.rey.material.widget.Button
         android:id="@+id/btn_comment"
         android:layout_width="60dp"
         android:layout_height="45dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        android:background="@color/colorPrimary"
+        android:background="@null"
         android:gravity="center"
         android:text="提交"
-        android:textColor="#81c2f8"
+        android:textColor="@color/colorPrimary"
         android:textSize="14sp"/>
 
 

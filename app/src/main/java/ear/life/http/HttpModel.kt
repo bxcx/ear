@@ -24,6 +24,7 @@ open class BaseModel : HMModel() {
 
 class CookieModel(var cookie: String, var cookie_name: String, var user: UserModel) : BaseModel()
 class CookieValidModel(var valid: Boolean) : BaseModel()
+class NoncedModel(var controller: String, var method: String, var nonce: String) : BaseModel()
 
 /**
  * 用户
