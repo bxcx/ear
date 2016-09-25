@@ -51,7 +51,7 @@
             android:layout_marginLeft="15dp"
             android:text="October Rain"
             android:textColor="#333333"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
 
         <com.hm.library.resource.discreteseekbar.DiscreteSeekBar
             android:id="@+id/bar_vol"

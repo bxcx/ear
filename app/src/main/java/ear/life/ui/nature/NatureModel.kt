@@ -7,6 +7,8 @@ import android.view.View
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.http.HMRequest
 import com.hm.library.resource.discreteseekbar.DiscreteSeekBar
+import com.hm.library.resource.view.ActionSheetDialog
+import com.hm.library.resource.view.CustomToast
 import ear.life.R
 import ear.life.app.App
 import ear.life.http.BaseModel
@@ -29,9 +31,26 @@ class NautreHolder(itemView: View) : BaseViewHolder<NatureListModel.NautreModel>
             return
         }
 
+
         val path = App.NatureSoundPath
         val fileName = data.name + ".m4a"
         val file = File("$path/$fileName")
+
+        itemView.setOnLongClickListener {
+            if (file.exists()) {
+                ActionSheetDialog(context).builder().setTitle("确认删除本地文件吗?")
+                        .addSheetItem("删除", Color.RED, {
+                            if (file.delete()) {
+                                CustomToast.makeText(context, "删除成功", 0).show()
+                            } else {
+                                CustomToast.makeText(context, "删除失败", 0).show()
+                            }
+                            setContent(position)
+                        })
+                        .show()
+            }
+            true
+        }
 
         var name: String = ""
         var disable: String = ""

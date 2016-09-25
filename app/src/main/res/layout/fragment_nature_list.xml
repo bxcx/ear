@@ -14,31 +14,13 @@
         android:background="?attr/colorPrimary">
 
         <com.balysv.materialripple.MaterialRippleLayout
-            android:id="@+id/layout_icon_save"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:padding="10dp"
-            att:mrl_rippleAlpha="0.1"
-            att:mrl_rippleColor="#ffffff"
-            att:mrl_rippleOverlay="true">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/icon_right"/>
-        </com.balysv.materialripple.MaterialRippleLayout>
-
-
-        <com.balysv.materialripple.MaterialRippleLayout
             android:id="@+id/layout_icon_play"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
             android:padding="10dp"
             att:mrl_rippleAlpha="0.1"
             att:mrl_rippleColor="#ffffff"
+            android:layout_marginLeft="10dp"
             att:mrl_rippleOverlay="true">
 
             <ImageView
@@ -47,6 +29,16 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/icon_play"/>
         </com.balysv.materialripple.MaterialRippleLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="自然"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+
+
 
         <com.balysv.materialripple.MaterialRippleLayout
             android:id="@+id/layout_icon_clock"

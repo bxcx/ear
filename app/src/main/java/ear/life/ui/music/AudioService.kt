@@ -206,7 +206,7 @@ class AudioService : Service(), MediaPlayer.OnCompletionListener {
     override fun onCreate() {
         super.onCreate()
         mMediaPlayer.setOnCompletionListener(this)
-        mPlayList = MusicListData.playList!!
+        mPlayList = MusicListData.playList
         playMode = MusicListData.playMode!!
     }
 

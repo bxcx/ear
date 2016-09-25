@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permissions.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission_group.CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
     <!-- 允许联网 -->
@@ -25,9 +25,12 @@
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
 
     <supports-screens
         android:anyDensity="true"
@@ -45,26 +48,44 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="BUG_HD_SDK_GENERAL_KEY"
+            android:value="63d2a1fb5e8520329097e358b1d81692"/>
+
         <service android:name=".ui.music.AudioService"/>
 
         <activity
-            android:name=".ui.MainTabActivity"
-            android:theme="@style/MainTheme">
+            android:name=".ui.LogoActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.hm.library.resource.draggridview.DragGridActivity"/>
-        <activity android:name=".ui.article.ArticleDetailActivity"/>
-        <activity android:name=".ui.LoginActivity"/>
-
-        <activity android:name=".ui.music.PlayerActivity"/>
-        <activity android:name=".ui.music.MusicListActivity">
+        <activity
+            android:name=".ui.MainTabActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainTheme">
         </activity>
-        <activity android:name=".ui.music.PlayerListActivity">
-        </activity>
+        <activity
+            android:name="com.hm.library.resource.draggridview.DragGridActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.article.ArticleDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.music.PlayerActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.music.MusicListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.music.PlayerListActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

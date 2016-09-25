@@ -1,5 +1,6 @@
 package ear.life.ui
 
+import android.app.Activity
 import android.view.View
 import com.hm.library.base.BaseActivity
 import com.hm.library.expansion.isEmail
@@ -96,6 +97,7 @@ class LoginActivity : BaseActivity() {
                 //登录成功, 可在本地缓存cookie, 并更新HMRequest中默认的params
                 App.updateCookie(it)
                 showTips(TipType.Success, "登录成功")
+                setResult(Activity.RESULT_OK)
                 finish(500)
             }
         }

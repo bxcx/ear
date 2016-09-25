@@ -88,10 +88,6 @@ class NatureFragment : BaseListFragment<NatureListModel.NautreModel, NautreHolde
     override fun initUI() {
         super.initUI()
 
-        layout_icon_save.onClick {
-            showTips(Smile, "功能开发中")
-        }
-
         layout_icon_play.onClick {
             if (NatureManager.isPlaying()) {
                 iv_play.setImageResource(R.drawable.icon_pause)

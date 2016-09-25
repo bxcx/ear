@@ -14,6 +14,7 @@ import ear.life.http.HttpServerPath
 import ear.life.http.UserModel
 import ear.life.ui.LoginActivity
 import ear.life.ui.music.AudioService
+import im.fir.sdk.FIR
 import okio.Buffer
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -66,6 +67,8 @@ class App : HMApp() {
 
 
     companion object {
+        val api_token = "3bb1dc3b5b5ecd3df2272616cad7e1d5"
+
         val COOKIE: String = "COOKIE"
         var cookie: CookieModel? = null
         var user: UserModel? = null
@@ -147,6 +150,7 @@ class App : HMApp() {
         checkPath(ImageAlbumPath)
         checkPath(LightMusicPath)
         checkPath(NatureSoundPath)
+        FIR.init(this)
     }
 
     fun checkPath(path: String) {
