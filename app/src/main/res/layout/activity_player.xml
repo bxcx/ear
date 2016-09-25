@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:att="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#5F9EA0">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_back"
+            android:layout_width="52dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_back"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_share"
+            android:layout_width="52dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_share"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_album_art"
+        android:layout_width="301dp"
+        android:layout_height="301dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp">
+
+        <ear.life.ui.view.playerview.MusicPlayerView
+            android:id="@+id/album_art"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            att:buttonColor="#FF0028"
+            att:cover="@drawable/ic_launcher"
+            att:hideButton="true"
+            att:progressEmptyColor="#20FFFFFF"
+            att:progressLoadedColor="#00815E"
+            att:textColor="#80FFFFFF"
+            att:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/icon_cd"/>
+
+        <ImageView
+            android:id="@+id/iv_circle"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_circle"/>
+    </RelativeLayout>
+
+    <!--
+    <info.abdolahi.CircularMusicProgressBar
+        android:id="@+id/album_art"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/ic_launcher"
+        att:border_color="#B0C4DE"
+        att:border_width="2dp"
+        att:centercircle_diammterer="1"
+        att:progress_color="@color/colorPrimary"
+        att:progress_startAngle="180"/>
+        !-->
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_album_art"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="学院北路的蔷薇"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="小樱花"
+        android:textColor="#ffffff"
+        android:textSize="16sp"/>
+
+    <RelativeLayout
+        android:id="@+id/temp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_artist"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_player_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="left"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_player_mode"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_play_order"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_player_last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/layout_player_play"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_play_last"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_player_last"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_player_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_play"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_player_pause"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_player_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/layout_player_play"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_play_next"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_player_next"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_play_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_play_list"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_play_list"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </RelativeLayout>
+
+
+    <!--
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:visibility="invisible"
+        att:fabDrawable="@drawable/icon_play_round_list"
+        att:fabGravity="bottom_start"
+        att:fabMenu="@menu/menu_playmode"
+        att:miniFabBackgroundTint="@android:color/white"
+        att:miniFabDrawableTint="?attr/colorPrimaryDark"
+        att:miniFabTitleTextColor="?attr/colorPrimaryDark"
+        att:touchGuard="true"/>
+    !-->
+</RelativeLayout>

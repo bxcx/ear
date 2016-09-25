@@ -15,6 +15,7 @@ import java.net.UnknownHostException
 object HttpServerPath : HMExceptionInfo {
 
     val MAIN = "https://ear.life"
+    val Server_Nature = MAIN + "/api/getNature.php"
 
     override fun parseError(e: Exception): String {
         var domain = when (e) {

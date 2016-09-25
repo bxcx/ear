@@ -1,4 +1,4 @@
-package com.hm.hmlibrary.ui.common.article
+package com.hm.hmlibrary.ui.article
 
 import android.text.TextUtils
 import android.view.View
@@ -6,6 +6,8 @@ import com.hm.library.base.BaseViewHolder
 import com.hm.library.expansion.show
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
+import com.hm.library.util.ImageUtil
+import ear.life.R
 import ear.life.http.AttachmentModel
 import ear.life.http.BaseModel
 import ear.life.http.CommentModel
@@ -87,6 +89,7 @@ class ArticleHolder(itemView: View) : BaseViewHolder<Article>(itemView) {
         }
 
         itemView.tv_excerpt.text = data._excerpt
+        itemView.iv_head.show(data.author?.avatar, ImageUtil.CircleDisplayImageOptions(R.drawable.ic_launcher))
 
         if (data._categories == null) {
             data.categories?.sortBy { it.id }

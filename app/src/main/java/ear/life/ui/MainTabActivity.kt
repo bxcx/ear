@@ -9,19 +9,30 @@ import ear.life.R
 import ear.life.app.App
 import ear.life.http.CookieValidModel
 import ear.life.ui.article.ArticleFragment
+import ear.life.ui.music.LinghtMusicFragment
+import ear.life.ui.nature.NatureFragment
 import kotlinx.android.synthetic.main.activity_main_tab.*
 
 class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab) : BaseMainActivity() {
 
     //妙笔
     lateinit var articleFragment: ArticleFragment
+    //纯音
+    lateinit var lightMusicFragment: LinghtMusicFragment
+    //自然
+    lateinit var natureFragment: NatureFragment
 
     override fun setUIParams() {
+
+        App.ContentResolver = contentResolver
+
         articleFragment = ArticleFragment()
+        lightMusicFragment = LinghtMusicFragment()
+        natureFragment = NatureFragment()
 
         mTabs.add(articleFragment)
-        mTabs.add(BlankFragment())
-        mTabs.add(BlankFragment())
+        mTabs.add(lightMusicFragment)
+        mTabs.add(natureFragment)
         mTabs.add(BlankFragment())
     }
 
@@ -55,6 +66,7 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
                 DragGridActivity.Selection -> {
                     articleFragment.onActivityResult(requestCode, resultCode, data)
                 }
+                LinghtMusicFragment.Action_Import -> lightMusicFragment.onActivityResult(requestCode, resultCode, data)
             }
         }
     }

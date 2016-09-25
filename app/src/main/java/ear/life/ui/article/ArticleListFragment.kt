@@ -3,9 +3,9 @@ package ear.life.ui.article
 
 import android.os.Bundle
 import android.view.ViewGroup
-import com.hm.hmlibrary.ui.common.article.Article
-import com.hm.hmlibrary.ui.common.article.ArticleHolder
-import com.hm.hmlibrary.ui.common.article.ArticleListModel
+import com.hm.hmlibrary.ui.article.Article
+import com.hm.hmlibrary.ui.article.ArticleHolder
+import com.hm.hmlibrary.ui.article.ArticleListModel
 import com.hm.library.base.BaseListFragment
 import com.hm.library.http.HMRequest
 import com.hm.library.util.ArgumentUtil

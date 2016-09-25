@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:hm="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="90dp">
+
+    <!--
+        hm:mrl_rippleOverlay="true"              // if true, ripple is drawn in foreground; false - background
+        hm:mrl_rippleColor="#00bb9c"             // color of ripple
+        hm:mrl_rippleAlpha="0.1"                 // alpha of ripple
+        hm:mrl_rippleDimension="10dp"            // radius of hover and starting ripple
+        hm:mrl_rippleHover="true"                // if true, a hover effect is drawn when view is touched
+        hm:mrl_rippleRoundedCorners="10dp"       // radius of corners of ripples. Note: it uses software rendering pipeline for API 17 and below
+        hm:mrl_rippleInAdapter="true"            // if true, MaterialRippleLayout will optimize for use in AdapterViews
+        hm:mrl_rippleDuration="350"              // duration of ripple animation
+        hm:mrl_rippleFadeDuration="75"           // duration of fade out effect on ripple
+        hm:mrl_rippleDelayClick="true"           // if true, delays calls to OnClickListeners until ripple effect ends
+        hm:mrl_rippleBackground="#FFFFFF"        // background under ripple drawable; used with rippleOverlay="false"
+        hm:mrl_ripplePersistent="true"           // if true, ripple background color persists after animation, until setRadius(0) is called
+     -->
+    <com.balysv.materialripple.MaterialRippleLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:padding="10dp"
+        hm:mrl_rippleAlpha="0.1"
+        hm:mrl_rippleColor="#00bb9c"
+        hm:mrl_rippleOverlay="true">
+
+        <ImageView
+            android:id="@+id/iv_img"
+            android:layout_width="52.5dp"
+            android:layout_height="46.6dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/rain_icon"/>
+
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/layout">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="October Rain"
+            android:textColor="#333333"
+            android:textSize="18sp"/>
+
+        <com.hm.library.resource.discreteseekbar.DiscreteSeekBar
+            android:id="@+id/bar_vol"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            hm:dsb_max="100"
+            hm:dsb_min="0"
+            hm:dsb_value="50"
+            />
+
+        <ImageView
+            android:id="@+id/iv_playing"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:visibility="gone"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_sound"/>
+
+        <View
+            android:id="@+id/v_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/subscribe_item_drag_stroke"/>
+
+</RelativeLayout>

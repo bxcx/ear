@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:hm="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <com.balysv.materialripple.MaterialRippleLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        hm:mrl_rippleAlpha="0.1"
+        hm:mrl_rippleColor="#00bb9c"
+        hm:mrl_rippleOverlay="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:paddingRight="20dp">
+
+            <ImageView
+                android:id="@+id/iv_seleced"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_music_unselect"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/iv_img"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/iv_seleced"
+                android:background="@drawable/iv_defalut_image"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/iv_img"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="3dp"
+                android:layout_toLeftOf="@+id/iv_sort"
+                android:layout_toRightOf="@+id/iv_img"
+                android:singleLine="true"
+                android:text="October Rain"
+                android:textColor="#333333"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/iv_img"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="15dp"
+                android:layout_toLeftOf="@+id/iv_sort"
+                android:layout_toRightOf="@+id/iv_img"
+                android:singleLine="true"
+                android:text=" Rain"
+                android:textColor="#bebebe"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:id="@+id/iv_playing"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="25dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_sound"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/iv_sort"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_sort"
+                android:visibility="gone"/>
+
+
+        </RelativeLayout>
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+
+</RelativeLayout>

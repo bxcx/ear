@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/layout_content"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:att="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_icon_save"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_right"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_icon_play"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_play"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_play"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/layout_icon_clock"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="8dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:id="@+id/iv_clock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_clock"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </RelativeLayout>
+
+
+    <com.hm.library.resource.recyclerview.PullRefreshLoadRecyclerView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_title"
+        android:background="#F5F5F5"
+        android:scrollbars="vertical"
+        />
+
+    <RelativeLayout
+        android:id="@+id/layout_clock"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_title"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="150dp"
+            android:text="20分钟"
+            android:textColor="#333333"
+            android:textSize="18sp"/>
+
+        <com.hm.library.resource.circularseekbar.CircularSeekBar
+            android:id="@+id/bar_clock"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            att:circle_color="#96353535"
+            att:circle_progress_color="#00bb9c"
+            att:circle_x_radius="100dp"
+            att:circle_y_radius="100dp"
+            att:cs_max="120"
+            att:cs_progress="10"
+            att:end_angle="0"
+            att:pointer_alpha_ontouch="100"
+            att:pointer_color="#00bb9c"
+            att:pointer_halo_color="#8800bb9c"
+            att:start_angle="180"
+            att:use_custom_radii="true"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="至 14:40"
+            android:textColor="#bababa"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_time"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_half"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="一半就好"
+                android:textColor="#bababa"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+
+        <com.rey.material.widget.Button
+            android:id="@+id/btn_start"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="30dp"
+            android:background="#00bb9c"
+            att:rd_enable="true"
+            android:text="开/关"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

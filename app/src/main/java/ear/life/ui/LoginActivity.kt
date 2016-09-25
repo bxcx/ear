@@ -1,6 +1,5 @@
 package ear.life.ui
 
-import android.text.TextUtils
 import android.view.View
 import com.hm.library.base.BaseActivity
 import com.hm.library.expansion.isEmail
@@ -66,32 +65,39 @@ class LoginActivity : BaseActivity() {
 
     //登录
     fun doLogin() {
-        val username = ed_id.text.trim().toString()
-        val password = ed_pwd.text.toString()
+        ed_id.setText(ed_id.text.toString().replace(" ", ""))
+        if (!ed_id.text.length(3, 18)) {
+            showTips(TipType.Error, "账号长度为3~18位")
+            ed_id.text.clear()
+            ed_id.showSoftInput()
+            return
+        } else if (!ed_pwd.text.length(6, 18)) {
+            showTips(TipType.Error, "密码长度为6~18位")
+            ed_pwd.text.clear()
+            ed_repwd.text.clear()
+            ed_pwd.showSoftInput()
+            return
+        }
 
-        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-            showLoading()
+        showLoading()
 
-            val params = HashMap<String, Any>()
-            params.put("json", "user/generate_auth_cookie")
-            params.put("username", username)
-            params.put("password", password)
+        val params = HashMap<String, Any>()
+        params.put("json", "user/generate_auth_cookie")
+        params.put("username", ed_id.text.trim())
+        params.put("password", ed_pwd.text)
 
-            //这里如果登录失败时需要提示用户, 所以将needCallBack设置为true
-            HMRequest.go<CookieModel>(params = params, needCallBack = true) {
-                cancelLoading()
+        //这里如果登录失败时需要提示用户, 所以将needCallBack设置为true
+        HMRequest.go<CookieModel>(params = params, needCallBack = true) {
+            cancelLoading()
 
-                if (it == null) {
-                    showTips(TipType.Error, "账号或密码错误")
-                } else {
-                    //登录成功, 可在本地缓存cookie, 并更新HMRequest中默认的params
-                    App.updateCookie(it)
-                    showTips(TipType.Success, "登录成功")
-                    finish(500)
-                }
+            if (it == null) {
+                showTips(TipType.Error, "账号或密码错误")
+            } else {
+                //登录成功, 可在本地缓存cookie, 并更新HMRequest中默认的params
+                App.updateCookie(it)
+                showTips(TipType.Success, "登录成功")
+                finish(500)
             }
-        } else {
-            showTips(TipType.Warning, "账号密码呢?")
         }
     }
 

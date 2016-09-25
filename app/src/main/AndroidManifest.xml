@@ -44,6 +44,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service android:name=".ui.music.AudioService"/>
+
         <activity
             android:name=".ui.MainTabActivity"
             android:theme="@style/MainTheme">
@@ -55,9 +58,12 @@
         </activity>
         <activity android:name="com.hm.library.resource.draggridview.DragGridActivity"/>
         <activity android:name=".ui.article.ArticleDetailActivity"/>
-        <activity android:name=".ui.LoginActivity">
+        <activity android:name=".ui.LoginActivity"/>
+
+        <activity android:name=".ui.music.PlayerActivity"/>
+        <activity android:name=".ui.music.MusicListActivity">
         </activity>
-        <activity android:name=".ui.RenewActivity">
+        <activity android:name=".ui.music.PlayerListActivity">
         </activity>
     </application>
 

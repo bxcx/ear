@@ -1,16 +1,23 @@
 package ear.life.app
 
 import android.app.Activity
+import android.content.*
+import android.os.IBinder
 import com.hm.library.app.Cacher
 import com.hm.library.app.HMApp
 import com.hm.library.http.HMRequest
 import com.hm.library.http.Method
+import com.hm.library.util.PathUtil
+import com.zhy.http.okhttp.OkHttpUtils
 import ear.life.http.CookieModel
 import ear.life.http.HttpServerPath
 import ear.life.http.UserModel
 import ear.life.ui.LoginActivity
+import ear.life.ui.music.AudioService
+import okio.Buffer
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.io.File
 import java.util.*
 
 /**
@@ -63,6 +70,31 @@ class App : HMApp() {
         var cookie: CookieModel? = null
         var user: UserModel? = null
 
+        var ContentResolver: ContentResolver? = null
+
+        val AppPath: String = PathUtil.SDCardPath() + "/ear"
+        val ImagePath: String = AppPath + "/image"
+        val ImageAlbumPath: String = AppPath + "/image/album"
+        val LightMusicPath: String = AppPath + "/lightMusic"
+        val NatureSoundPath: String = AppPath + "/natureSound"
+
+        lateinit var AudioService: AudioService
+
+        //使用ServiceConnection来监听Service状态的变化
+        private val conn = object : ServiceConnection {
+
+            override fun onServiceDisconnected(name: ComponentName) {
+                // TODO Auto-generated method stub
+//                AudioService = null
+            }
+
+            override fun onServiceConnected(name: ComponentName, binder: IBinder) {
+                //这里我们实例化audioService,通过binder来实现
+                AudioService = (binder as AudioService.AudioBinder).service
+
+            }
+        }
+
         fun checkCookie(act: Activity): Boolean {
             if (cookie == null) {
                 act.toast("请先登录")
@@ -94,16 +126,7 @@ class App : HMApp() {
                 return params
             }
 
-        val createNameAndEmailParams: HashMap<String, Any>
-            get() {
-                val params = HashMap<String, Any>()
-                if (cookie != null) {
-                    params.put("cookie", cookie!!.cookie)
-                    params.put("name", cookie!!.user.nickname)
-                    params.put("email", cookie!!.user.email)
-                }
-                return params
-            }
+
     }
 
     override fun onCreate() {
@@ -113,6 +136,22 @@ class App : HMApp() {
         HMRequest.method = Method.POST
         HMRequest.server = HttpServerPath.MAIN
         HMRequest.parse = HttpServerPath
-//        OkHttpUtils.getInstance().setCertificates(Buffer().writeUtf8(CER).inputStream())
+        OkHttpUtils.getInstance().setCertificates(Buffer().writeUtf8(CER).inputStream())
+
+        val intent = Intent()
+        intent.setClass(applicationContext, AudioService::class.java)
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+
+        checkPath(AppPath)
+        checkPath(ImagePath)
+        checkPath(ImageAlbumPath)
+        checkPath(LightMusicPath)
+        checkPath(NatureSoundPath)
+    }
+
+    fun checkPath(path: String) {
+        val root = File(path)
+        if (!root.exists())
+            root.mkdirs()
     }
 }

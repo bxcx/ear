@@ -4,19 +4,17 @@ import android.app.Dialog
 import android.content.Context
 import android.text.TextUtils
 import android.view.*
-import android.webkit.JavascriptInterface
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.EditText
-import com.hm.hmlibrary.ui.common.article.Article
-import com.hm.hmlibrary.ui.common.article.ArticleModel
+import com.hm.hmlibrary.ui.article.Article
+import com.hm.hmlibrary.ui.article.ArticleModel
 import com.hm.library.base.BaseListActivity
 import com.hm.library.base.BaseViewHolder
+import com.hm.library.expansion.show
 import com.hm.library.http.HMRequest
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
-import com.orhanobut.logger.Logger
+import com.hm.library.util.ImageUtil
 import com.rey.material.widget.Button
 import ear.life.R
 import ear.life.app.App
@@ -54,6 +52,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         return article != null
     }
 
+    var displayUI: Boolean = false
     override fun setHeaderView() {
         webView = WebView(this)
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
@@ -72,10 +71,22 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         webView.loadUrl(article?._url)
 
         showLoadProgerss()
+        webView.setWebChromeClient(object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                if (!displayUI && newProgress > 80) {
+                    displayUI = true
+                    runDelayed({
+                        //webView嵌套有时会出现大面积空白, 所以在加载完成后, 重新设置一下它的高度
+                        webView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
+                    }, 3000)
+                }
+            }
+        })
         webView.setWebViewClient(object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 view.loadUrl(url)
-                return false
+                return true
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -101,10 +112,6 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                             "}()) "
                     webView.loadUrl(js)
                 }, 3000)
-
-                //webView嵌套有时会出现大面积空白, 所以在加载完成后, 重新设置一下它的高度
-                webView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
-
             }
         })
         fragment!!.recyclerView!!.addHeaderView(webView)
@@ -114,7 +121,6 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     @JavascriptInterface
     fun resize(height: Float) {
         runOnUIThread({
-            Logger.e("${height * resources.displayMetrics.density}")
             webView.layoutParams.width = resources.displayMetrics.widthPixels
             webView.layoutParams.height = (height * resources.displayMetrics.density).toInt()
             hasResize = true
@@ -225,16 +231,18 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     class CommentHolder(itemView: View) : BaseViewHolder<CommentModel>(itemView) {
         override fun setContent(position: Int) {
-            itemView.tv_name.text = data.name
+            itemView.tv_name.text = data.author?.nickname
             itemView.tv_date.text = data.date
             itemView.tv_content.text = HtmlUtil.splitAndFilterString(data.content)
+            itemView.iv_head.show(data.author?.avatar, ImageUtil.CircleDisplayImageOptions(R.drawable.ic_launcher))
+
         }
 
     }
 
     override fun onResume() {
         super.onResume()
-        webView?.onResume()
+        webView.onResume()
 
         //先查查当前是否已经收藏过
         if (App.cookie != null && article != null) {
@@ -250,20 +258,20 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     override fun onPause() {
         super.onPause()
-        webView?.onPause()
+        webView.onPause()
     }
 
     override fun onDestroy() {
-        webView?.destroy()
+        webView.destroy()
         super.onDestroy()
     }
 
     class DialogComment(internal var context: Context, btText: String, hint: String) {
 
 
-        private val dialog: Dialog
-        lateinit var ed_comment: EditText
-        lateinit var btn_comment: Button
+        val dialog: Dialog
+        var ed_comment: EditText
+        var btn_comment: Button
 
         init {
             val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager

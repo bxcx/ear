@@ -4,7 +4,7 @@ package ear.life.ui.article
 import android.content.Intent
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
-import com.hm.hmlibrary.ui.common.article.CategorieListModel
+import com.hm.hmlibrary.ui.article.CategorieListModel
 import com.hm.library.app.Cacher
 import com.hm.library.base.BaseFragment
 import com.hm.library.http.HMRequest

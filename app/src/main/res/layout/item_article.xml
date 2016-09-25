@@ -90,7 +90,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@drawable/ic_menu_iting_28"
+                    android:src="@drawable/ic_menu_iting_28"
                     android:scaleType="centerCrop"/>
 
                 <TextView

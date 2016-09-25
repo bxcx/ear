@@ -112,7 +112,6 @@
             android:layout_marginTop="10dp"
             android:background="@color/colorPrimary"
             android:text="登录"
-            att:rd_cornerRadius="120dp"
             att:rd_enable="true"/>
 
         <com.hm.library.resource.material.MaterialTextView
