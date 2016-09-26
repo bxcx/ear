@@ -57,6 +57,8 @@ object MusicListData {
     }
 
     fun refresh(completionHandler: () -> Unit?) {
+        if(App.ContentResolver == null)
+            return
         MusicLoader.instance(App.ContentResolver!!).referesh {
             musicList = it as ArrayList<MusicInfo>
             musicList!!.forEach {

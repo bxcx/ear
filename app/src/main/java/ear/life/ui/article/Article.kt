@@ -66,10 +66,26 @@ class Article(
         var comment_status: String?,
         var custom_fields: ArticleListModel.Custom_Article_Fields?,
 
-        var _excerpt: String?,
         var _categories: ArrayList<CategorieListModel.CategorieModel>?,
         var _likeCount: String?
 ) : Serializable {
+
+    private var t_excerpt: String = ""
+    var _excerpt: String = ""
+        get() {
+            if (TextUtils.isEmpty(t_excerpt)) {
+                t_excerpt = HtmlUtil.splitAndFilterString(content)
+                t_excerpt = t_excerpt.replace("Read more", "", true)
+
+                val index = t_excerpt.lastIndexOf("\n")
+                _likeCount = t_excerpt.substring(index + 1)
+                t_excerpt = t_excerpt.substring(0, index)
+                t_excerpt = t_excerpt.trim()
+            }
+            return t_excerpt
+        }
+
+
     var _url: String? = ""
         get() = url?.replace("https://", "http://")
 }
@@ -79,14 +95,14 @@ class ArticleHolder(itemView: View) : BaseViewHolder<Article>(itemView) {
     override fun setContent(position: Int) {
 
         itemView.tv_title.text = data.title
-        if (TextUtils.isEmpty(data._likeCount)) {
-            data._excerpt = HtmlUtil.splitAndFilterString(data.content)
-            data._excerpt = data._excerpt?.replace("Read more", "", true)
-            val index = data._excerpt?.lastIndexOf("\n")
-            data._likeCount = data._excerpt?.substring(index!! + 1)
-            data._excerpt = data._excerpt?.substring(0, index!!)
-            data._excerpt = data._excerpt?.trim()
-        }
+//        if (TextUtils.isEmpty(data._likeCount)) {
+//            data._excerpt = HtmlUtil.splitAndFilterString(data.content)
+//            data._excerpt = data._excerpt?.replace("Read more", "", true)
+//            val index = data._excerpt?.lastIndexOf("\n")
+//            data._likeCount = data._excerpt?.substring(index!! + 1)
+//            data._excerpt = data._excerpt?.substring(0, index!!)
+//            data._excerpt = data._excerpt?.trim()
+//        }
 
         itemView.tv_excerpt.text = data._excerpt
         itemView.iv_head.show(data.author?.avatar, ImageUtil.CircleDisplayImageOptions(R.drawable.ic_launcher))

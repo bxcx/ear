@@ -7,17 +7,22 @@ import com.hm.library.base.BaseFragment
 import com.hm.library.expansion.show
 import com.hm.library.http.HMRequest
 import com.hm.library.resource.view.ActionSheetDialog
+import com.hm.library.umeng.share.IShareCallback
+import com.hm.library.umeng.share.ShareUtils
+import com.umeng.socialize.media.UMImage
 import ear.life.R
 import ear.life.app.App
 import ear.life.http.CookieModel
 import ear.life.ui.LoginActivity
 import kotlinx.android.synthetic.main.fragment_mine.*
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.support.v4.act
+import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.startActivityForResult
 
 class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : BaseFragment() {
 
-    companion object{
+    companion object {
         val Action_Login = 20
     }
 
@@ -36,6 +41,19 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
 
     override fun initUI() {
         super.initUI()
+
+        layout_share.onClick {
+            ShareUtils(act).share("耳朵纯音乐", "http://fir.im/ear", "总有一些音乐宠坏了我们的耳朵", UMImage(ctx, R.drawable.ic_launcher), object : IShareCallback {
+                override fun onSuccess() {
+                }
+
+                override fun onFaild() {
+                }
+
+                override fun onCancel() {
+                }
+            })
+        }
 
         layout_loginout.onClick {
             if (App.user != null) {

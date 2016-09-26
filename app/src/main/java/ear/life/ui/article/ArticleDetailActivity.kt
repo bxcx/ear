@@ -12,10 +12,13 @@ import com.hm.library.base.BaseListActivity
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.expansion.show
 import com.hm.library.http.HMRequest
+import com.hm.library.umeng.share.IShareCallback
+import com.hm.library.umeng.share.ShareUtils
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
 import com.hm.library.util.ImageUtil
 import com.rey.material.widget.Button
+import com.umeng.socialize.media.UMImage
 import ear.life.R
 import ear.life.app.App
 import ear.life.extension.hideSoftInput
@@ -26,6 +29,7 @@ import ear.life.http.FavoriteModel
 import ear.life.ui.article.ArticleDetailActivity.CommentHolder
 import kotlinx.android.synthetic.main.activity_article_detail.*
 import kotlinx.android.synthetic.main.item_comment.view.*
+import org.jetbrains.anko.act
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.onClick
 
@@ -174,10 +178,14 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         }
 
         iv_comment.onClick {
+            if (article == null)
+                return@onClick
             fragment!!.recyclerView!!.recyclerView.scrollBy(0, webView.layoutParams.height)
         }
 
         iv_collect.onClick {
+            if (article == null)
+                return@onClick
             if (!App.checkCookie(this)) {
                 return@onClick
             }
@@ -192,6 +200,28 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                 cancelLoading()
                 iv_collect.setImageResource(if (it!!.after) R.drawable.icon_collected else R.drawable.icon_collect)
             }
+        }
+
+        iv_share.onClick {
+            if (article == null)
+                return@onClick
+            val image: UMImage
+            if (article!!.attachments != null && article!!.attachments!!.size > 0) {
+                image = UMImage(ctx, article!!.attachments!![0].images.thumbnail.url)
+            } else {
+                image = UMImage(ctx, R.drawable.ic_launcher)
+            }
+
+            ShareUtils(act).share(article!!.title, article!!._url, article!!._excerpt, image, object : IShareCallback {
+                override fun onSuccess() {
+                }
+
+                override fun onFaild() {
+                }
+
+                override fun onCancel() {
+                }
+            })
         }
 
     }

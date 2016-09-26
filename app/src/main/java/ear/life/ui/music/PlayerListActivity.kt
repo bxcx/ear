@@ -23,9 +23,7 @@ class PlayerListActivity : BaseListActivity<MusicLoader.MusicInfo, PlayerListAct
     override fun setUIParams() {
         swipeBack = false
         menuResID = R.menu.menu_save
-    }
 
-    override fun setListParams() {
         //是否能刷新
         canRefesh = false
         //是否能加载更多
@@ -38,7 +36,6 @@ class PlayerListActivity : BaseListActivity<MusicLoader.MusicInfo, PlayerListAct
         swipeType = PullRefreshLoadRecyclerView.SwipeType.Layout
 
         itemResID = R.layout.item_music_playlist
-
     }
 
     override fun initUI() {

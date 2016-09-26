@@ -2,12 +2,17 @@ package ear.life.app
 
 import android.app.Activity
 import android.content.*
+import android.os.Bundle
 import android.os.IBinder
 import com.hm.library.app.Cacher
 import com.hm.library.app.HMApp
+import com.hm.library.base.BaseActivity
+import com.hm.library.base.OnActivityResponse
 import com.hm.library.http.HMRequest
 import com.hm.library.http.Method
 import com.hm.library.util.PathUtil
+import com.umeng.analytics.MobclickAgent
+import com.umeng.socialize.PlatformConfig
 import com.zhy.http.okhttp.OkHttpUtils
 import ear.life.http.CookieModel
 import ear.life.http.HttpServerPath
@@ -150,7 +155,36 @@ class App : HMApp() {
         checkPath(ImageAlbumPath)
         checkPath(LightMusicPath)
         checkPath(NatureSoundPath)
+
         FIR.init(this)
+
+        PlatformConfig.setWeixin("wxfd90f99c0cc74b6b", "d2221c57b74142b819716b2e07b03995")
+        PlatformConfig.setSinaWeibo("4095358359", "deaa7d29ca46905620600ab8e62a345e")
+        PlatformConfig.setQQZone("1105718030", "8WYKGmpNUOm2NZah")
+
+        BaseActivity.onActivityResponse = object : OnActivityResponse {
+            override fun finish(activity: BaseActivity) {
+            }
+
+            override fun onCreate(activity: BaseActivity, savedInstanceState: Bundle?) {
+            }
+
+            override fun onDestroy(activity: BaseActivity) {
+            }
+
+            override fun onPause(activity: BaseActivity) {
+                MobclickAgent.onPause(activity)
+            }
+
+            override fun onPostCreate(activity: BaseActivity, savedInstanceState: Bundle?) {
+            }
+
+            override fun onResume(activity: BaseActivity) {
+                MobclickAgent.onResume(activity)
+            }
+
+        }
+
     }
 
     fun checkPath(path: String) {
