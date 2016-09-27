@@ -16,7 +16,7 @@ open class BaseModel : HMModel() {
 
     //数据是否正确
     override var hm_valid: Boolean = false
-        get() = "ok".equals(status)
+        get() = "ok" == status
     //相应提示
     override var hm_message: String = ""
         get() = error

@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import com.hm.library.base.BaseActivity
 import com.hm.library.base.BaseListFragment
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.expansion.show
@@ -16,11 +17,13 @@ import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.ImageUtil
 import ear.life.R
 import ear.life.app.App
+import ear.life.ui.article.ArticleDetailActivity
 import ear.life.ui.music.MusicLoader.MusicInfo
 import kotlinx.android.synthetic.main.fragment_music_list.*
 import kotlinx.android.synthetic.main.item_music.view.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.onLongClick
+import org.jetbrains.anko.support.v4.act
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.startActivityForResult
 import java.io.File
@@ -90,11 +93,29 @@ open class LinghtMusicFragment : BaseListFragment<MusicInfo, LinghtMusicFragment
 //        audioWidget.show(100, 100)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (ArticleDetailActivity.needRefeshMusicLise) {
+            ArticleDetailActivity.needRefeshMusicLise = false
+            loadRefresh()
+        }
+    }
+
     override fun loadRefresh() {
         MusicListData.refresh { super.loadRefresh() }
     }
 
     override fun loadData() {
+        if (MusicListData.musicList == null) {
+            App.ContentResolver = act.contentResolver
+            loadRefresh()
+            return
+        }
+        if (MusicListData.musicList == null) {
+            showToast("加载本地音乐出错,请反馈")
+            return
+        }
+
         var musicList = if (isLight) {
             MusicListData.musicList!!.filter { it.url!!.contains(App.LightMusicPath) }
         } else {
@@ -138,6 +159,12 @@ open class LinghtMusicFragment : BaseListFragment<MusicInfo, LinghtMusicFragment
                 if (isLight) {
                     context.startActivity<PlayerActivity>(ArgumentUtil.ID to data.id)
                 } else {
+                    if (MusicListData.selectedMusicList.size > 4) {
+                        val act = context as BaseActivity
+                        act.showTips(TipsToast.TipType.Warning, "每次最多可以导入5首歌曲")
+                        return@onClick
+                    }
+
                     if (MusicListData.selectedMusicList.contains(data)) {
                         MusicListData.selectedMusicList.remove(data)
                     } else {

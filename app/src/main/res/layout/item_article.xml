@@ -87,8 +87,8 @@
 
                 <ImageView
                     android:id="@+id/iv_head"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_menu_iting_28"
                     android:scaleType="centerCrop"/>

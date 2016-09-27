@@ -66,6 +66,12 @@ class ArticleFragment(override var layoutResID: Int = R.layout.fragment_article)
 
     override fun initUI() {
         super.initUI()
+
+        if (pager == null) {
+            showToast("初始化错误,请反馈")
+            return
+        }
+
         pager.adapter = MyPagerAdapter()
         tabs.setViewPager(pager)
         tabs.setCurrentPosition(0)

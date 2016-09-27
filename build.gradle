@@ -13,6 +13,7 @@ allprojects {
     repositories {
         maven { url "https://jitpack.io" }
         maven { url "http://maven.bughd.com/public" }
+        maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
         mavenCentral()
         jcenter()
     }

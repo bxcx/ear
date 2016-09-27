@@ -41,7 +41,16 @@ class ArticleListModel(var posts: ArrayList<Article>) : BaseModel() {
                                 var mp3_title: ArrayList<String>,
                                 var mp3_author: ArrayList<String>,
                                 var mp3_address: ArrayList<String>
-    ) : Serializable
+    ) : Serializable {
+        val valid: Boolean
+            get() {
+                if (mp3_address == null || mp3_author == null || mp3_title == null)
+                    return false
+                if (mp3_address.size != mp3_author.size || mp3_address.size != mp3_title.size)
+                    return false
+                return true
+            }
+    }
 
 }
 

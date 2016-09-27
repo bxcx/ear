@@ -38,6 +38,7 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
 
 
     override fun setUIParams() {
+        App.ContentResolver = contentResolver
         articleFragment = ArticleFragment()
         lightMusicFragment = LinghtMusicFragment()
         natureFragment = NatureFragment()
@@ -61,18 +62,6 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
         //是否可以滑动，滑动是否有渐变效果
         main_tabpage.setStyle(false, false)
 
-//        if (App.cookie != null) {
-//            val params = App.createParams
-//            params.put("json", "user/validate_auth_cookie")
-//            HMRequest.go<CookieValidModel>(params = params, needCallBack = true) {
-//
-//                if (it == null || !it.valid) {
-//                    showToast("登录信息已过期")
-//                    App.updateCookie(null)
-//                }
-//            }
-//        }
-
 
         FIR.checkForUpdateInFIR(App.api_token, object : VersionCheckCallback() {
 
@@ -81,15 +70,36 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
                 if (DeviceInfoTool.getVersion(ctx) < version.version)
                     AlertDialog(ctx).builder().setCancelable(true).setTitle("发现新版本：" + version.versionShort)
                             .setMsg(version.changelog).setNegativeButton("下次再说") {}.setPositiveButton("立即更新") {
-                        val intent = Intent()
-                        intent.action = "android.intent.action.VIEW";
-                        intent.data = Uri.parse(version.installUrl)
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(version.installUrl))
                         startActivity(intent)
                     }.show()
 
             }
 
         })
+
+//        val request = Request.Builder().url("https://api.github.com/repos/square/okhttp/issues").header("User-Agent", "OkHttp Headers.java").addHeader("Accept", "application/json; q=0.5").addHeader("Accept", "application/vnd.github.v3+json").build()
+//
+//        val response = OkHttpClient().newCall(request).execute()
+//
+//        OkHttpUtils.get().addHeader("User-Agent", "test").url("http://itingw.b0.upaiyun.com/乌拉尔的花楸树.mp3").build()
+//                .execute(object : FileCallBack(App.NatureSoundPath, "test.mp3") //
+//                {
+//                    override fun onResponse(response: File?) {
+//                        Logger.i("下载成功,保存在" + response?.absolutePath)
+//                        toast("下载成功,保存在" + response?.absolutePath)
+//                    }
+//
+//                    override fun onError(call: Call?, e: Exception?) {
+//                        toast(e?.message.toString())
+//                    }
+//
+//                    override fun inProgress(progress: Float) {
+//                        com.orhanobut.logger.Logger.e("$progress")
+//                    }
+//
+//                })
+
     }
 
     override fun onTabSelected(index: Int) {
@@ -106,7 +116,7 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
                     articleFragment.onActivityResult(requestCode, resultCode, data)
                 }
                 LinghtMusicFragment.Action_Import -> lightMusicFragment.onActivityResult(requestCode, resultCode, data)
-                MineFragment.Action_Login -> mineFragment.onActivityResult(requestCode, resultCode, data)
+                else -> mineFragment.onActivityResult(requestCode, resultCode, data)
             }
         }
     }

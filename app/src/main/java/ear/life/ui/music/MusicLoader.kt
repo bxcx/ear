@@ -24,7 +24,7 @@ class MusicLoader private constructor() {
     //projection：选择的列; where：过滤条件; sortOrder：排序。
     private val projection = arrayOf(Media._ID, Media.TITLE, Media.DATA, Media.ALBUM, Media.ARTIST, Media.DURATION, Media.SIZE, Media.ALBUM_ID)
     private val where = "mime_type in ('audio/mpeg','audio/x-ms-wma') and is_music > 0 "
-//    private val where = "mime_type in ('audio/mpeg','audio/x-ms-wma') and bucket_display_name <> 'audio' and is_music > 0 "
+    //    private val where = "mime_type in ('audio/mpeg','audio/x-ms-wma') and bucket_display_name <> 'audio' and is_music > 0 "
     private val sortOrder = Media.DATA
 
     init {
@@ -66,7 +66,17 @@ class MusicLoader private constructor() {
                     musicInfo.size = size
                     musicInfo.artist = artist
                     musicInfo.url = url
-                    musicList.add(musicInfo)
+                    if (musicInfo.artist != null) {
+                        var b = false
+                        for (m in musicList) {
+                            if (musicInfo.artist.equals(m.artist) && musicInfo.size == m.size) {
+                                b = true
+                                break
+                            }
+                        }
+                        if (!b)
+                            musicList.add(musicInfo)
+                    }
                 }
 
             } while (cursor.moveToNext())

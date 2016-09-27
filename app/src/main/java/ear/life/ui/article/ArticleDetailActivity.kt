@@ -2,6 +2,9 @@ package ear.life.ui.article
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.text.TextUtils
 import android.view.*
 import android.webkit.*
@@ -12,6 +15,8 @@ import com.hm.library.base.BaseListActivity
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.expansion.show
 import com.hm.library.http.HMRequest
+import com.hm.library.resource.MediaScanner
+import com.hm.library.resource.view.TipsToast
 import com.hm.library.umeng.share.IShareCallback
 import com.hm.library.umeng.share.ShareUtils
 import com.hm.library.util.ArgumentUtil
@@ -38,9 +43,16 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     var article: Article? = null
     lateinit var webView: WebView
 
+    var su: ShareUtils? = null
+
+    companion object {
+        var needRefeshMusicLise = false
+    }
+
     override fun setUIParams() {
         layoutResID = R.layout.activity_article_detail
         itemResID = R.layout.item_comment
+        menuResID = R.menu.menu_article_detail
         canRefesh = true
         canLoadmore = false
     }
@@ -54,6 +66,57 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             finish()
         }
         return article != null
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_download) {
+            if (article == null)
+                return false
+
+            if (article!!.custom_fields == null || !article!!.custom_fields!!.valid) {
+                showTips(TipsToast.TipType.Error, "这首音乐暂未提供下载")
+                return false
+            }
+
+            val mp3 = article?.custom_fields ?: return false
+            if (mp3.mp3_address.size > 0) {
+                showLoading("下载中")
+                mp3.mp3_address.forEachIndexed { index, url ->
+                    HMRequest.download(url, App.LightMusicPath, mp3.mp3_title[index] + ".mp3", false, true, this) { progress, file ->
+                        if (file != null) {
+                            needRefeshMusicLise = true
+                            MediaScanner.scanFile(ctx, arrayOf(App.LightMusicPath), null) { path, uri ->
+                                runOnUiThread {
+                                    showTips(TipsToast.TipType.Success, "下载成功,请到纯音中试听")
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            //
+//        OkHttpUtils.get().addHeader("User-Agent", "test").url("http://itingw.b0.upaiyun.com/乌拉尔的花楸树.mp3").build()
+//                .execute(object : FileCallBack(App.NatureSoundPath, "test.mp3") //
+//                {
+//                    override fun onResponse(response: File?) {
+//                        Logger.i("下载成功,保存在" + response?.absolutePath)
+//                        toast("下载成功,保存在" + response?.absolutePath)
+//                    }
+//
+//                    override fun onError(call: Call?, e: Exception?) {
+//                        toast(e?.message.toString())
+//                    }
+//
+//                    override fun inProgress(progress: Float) {
+//                        com.orhanobut.logger.Logger.e("$progress")
+//                    }
+//
+//                })
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     var displayUI: Boolean = false
@@ -88,9 +151,20 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             }
         })
         webView.setWebViewClient(object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                view.loadUrl(url)
-                return true
+//            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+////                view.loadUrl(url)
+//                return false
+//            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                if (!url.equals(article?._url)) {
+//                    view?.goBack()
+                    val uri = Uri.parse(url)
+                    val iten = Intent(Intent.ACTION_VIEW, uri)
+                    startActivity(iten)
+                    finish(500)
+                }
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -212,8 +286,10 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                 image = UMImage(ctx, R.drawable.ic_launcher)
             }
 
-            ShareUtils(act).share(article!!.title, article!!._url, article!!._excerpt, image, object : IShareCallback {
+            su = ShareUtils(act)
+            su?.share(article!!.title, article!!._url, article!!._excerpt, image, object : IShareCallback {
                 override fun onSuccess() {
+                    showTips(TipsToast.TipType.Smile, "分享成功")
                 }
 
                 override fun onFaild() {
@@ -346,4 +422,8 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        su?.onActivityResult(requestCode, resultCode, data)
+    }
 }

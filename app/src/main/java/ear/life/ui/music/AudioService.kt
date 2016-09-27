@@ -207,7 +207,11 @@ class AudioService : Service(), MediaPlayer.OnCompletionListener {
         super.onCreate()
         mMediaPlayer.setOnCompletionListener(this)
         mPlayList = MusicListData.playList
-        playMode = MusicListData.playMode!!
+        if (MusicListData.playMode == null) {
+            playMode = PlayMode.Order
+        } else {
+            playMode = MusicListData.playMode!!
+        }
     }
 
     /**

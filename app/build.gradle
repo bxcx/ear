@@ -10,8 +10,8 @@ android {
         applicationId "ear.life"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 4
+        versionName "1.0.3"
     }
     buildTypes {
         release {
@@ -25,6 +25,8 @@ android {
     }
 }
 
+repositories { flatDir { dirs 'libs' } }
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
@@ -33,12 +35,14 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:palette-v7:24.2.1'
 
-    compile 'com.github.bxcx:HMLibrary:89192047ff'
+    compile 'com.github.bxcx:HMLibrary:ae04c194cb'
     //分享
     compile 'com.github.bxcx:HMUmeng_Share:v0.0.1'
 
     //友盟统计
     compile 'com.umeng.analytics:analytics:latest.integration'
+    //百川反馈
+    compile(name:'feedbackSdk', ext:'aar')
 
     //https://github.com/Cutta/GifView
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'

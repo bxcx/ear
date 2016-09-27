@@ -57,7 +57,7 @@ object MusicListData {
     }
 
     fun refresh(completionHandler: () -> Unit?) {
-        if(App.ContentResolver == null)
+        if (App.ContentResolver == null)
             return
         MusicLoader.instance(App.ContentResolver!!).referesh {
             musicList = it as ArrayList<MusicInfo>
@@ -101,6 +101,7 @@ class MusicListActivity(override var menuResID: Int = R.menu.menu_music_import) 
     override fun onViewCreated() {
         super.onViewCreated()
         title = "选择音乐并导入"
+        showTips(TipsToast.TipType.Smile, "请选择您最喜欢的5首歌曲")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

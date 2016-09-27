@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.hm.library.app.Cacher
 import com.hm.library.app.HMApp
 import com.hm.library.base.BaseActivity
@@ -12,6 +13,8 @@ import com.hm.library.http.HMRequest
 import com.hm.library.http.Method
 import com.hm.library.util.PathUtil
 import com.umeng.analytics.MobclickAgent
+import com.umeng.message.IUmengRegisterCallback
+import com.umeng.message.PushAgent
 import com.umeng.socialize.PlatformConfig
 import com.zhy.http.okhttp.OkHttpUtils
 import ear.life.http.CookieModel
@@ -167,6 +170,7 @@ class App : HMApp() {
             }
 
             override fun onCreate(activity: BaseActivity, savedInstanceState: Bundle?) {
+                PushAgent.getInstance(activity).onAppStart()
             }
 
             override fun onDestroy(activity: BaseActivity) {
@@ -184,6 +188,24 @@ class App : HMApp() {
             }
 
         }
+
+        val mPushAgent = PushAgent.getInstance(this)
+        //注册推送服务，每次调用register方法都会回调该接口
+        mPushAgent.register(object : IUmengRegisterCallback {
+
+            override fun onSuccess(deviceToken: String) {
+                //注册成功会返回device token
+                println("onSuccess " + deviceToken)
+            }
+
+            override fun onFailure(s: String, s1: String) {
+                println("onFailure " + s + s1)
+
+            }
+        })
+
+        //第二个参数是appkey，就是百川应用创建时候的appkey
+        FeedbackAPI.initAnnoy(this, "23465973")
 
     }
 

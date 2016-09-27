@@ -3,10 +3,12 @@ package ear.life.ui.mine
 
 import android.content.Intent
 import android.graphics.Color
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.hm.library.base.BaseFragment
 import com.hm.library.expansion.show
 import com.hm.library.http.HMRequest
 import com.hm.library.resource.view.ActionSheetDialog
+import com.hm.library.resource.view.TipsToast
 import com.hm.library.umeng.share.IShareCallback
 import com.hm.library.umeng.share.ShareUtils
 import com.umeng.socialize.media.UMImage
@@ -26,6 +28,8 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
         val Action_Login = 20
     }
 
+    var su: ShareUtils? = null
+
     override fun loadData() {
         if (App.user == null) {
             initUI()
@@ -41,10 +45,16 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
 
     override fun initUI() {
         super.initUI()
-
+        if (layout_feedback == null)
+            return
+        layout_feedback.onClick {
+            FeedbackAPI.openFeedbackActivity(ctx)
+        }
         layout_share.onClick {
-            ShareUtils(act).share("耳朵纯音乐", "http://fir.im/ear", "总有一些音乐宠坏了我们的耳朵", UMImage(ctx, R.drawable.ic_launcher), object : IShareCallback {
+            su = ShareUtils(act)
+            su?.share("耳朵纯音乐", "http://fir.im/ear", "总有一些音乐，宠坏了我们的耳朵", UMImage(ctx, R.drawable.ic_launcher), object : IShareCallback {
                 override fun onSuccess() {
+                    showTips(TipsToast.TipType.Smile, "分享成功")
                 }
 
                 override fun onFaild() {
@@ -81,19 +91,20 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
             return
         }
 
-        iv_head.show(App.user!!.avatar)
-        tv_name.text = App.user!!.nickname
+        iv_head.show(App.user?.avatar)
+        tv_name.text = App.user?.nickname
         tv_login.text = "注销"
     }
 
     override fun onResume() {
         super.onResume()
-        loadData()
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        loadData()
+        loadData()
+        su?.onActivityResult(requestCode, resultCode, data)
     }
 
 }

@@ -106,9 +106,9 @@ class NautreHolder(itemView: View) : BaseViewHolder<NatureListModel.NautreModel>
                 } else {
                     data.isDownloading = true
                     startDownload()
-                    HMRequest.download(data.src!!, path, fileName, false, context as Activity, {
-                        if (it!! < 1) {
-                            itemView.bar_vol.progress = (it * 100).toInt()
+                    HMRequest.download(data.src!!, path, fileName, false, false, context as Activity, { progress, file ->
+                        if (progress!! < 1) {
+                            itemView.bar_vol.progress = (progress * 100).toInt()
                         } else {
                             context.toast("下载成功，请点击播放")
                             data.isDownloading = false
