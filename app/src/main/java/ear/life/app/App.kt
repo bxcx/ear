@@ -159,7 +159,7 @@ class App : HMApp() {
 
         FIR.init(this)
 
-        PlatformConfig.setWeixin("wxfd90f99c0cc74b6b", "d2221c57b74142b819716b2e07b03995")
+        PlatformConfig.setWeixin("wxfd5e5acf72fcbf2e", "6743846a699547bb660193f5cc762e5e")
         PlatformConfig.setSinaWeibo("4095358359", "deaa7d29ca46905620600ab8e62a345e")
         PlatformConfig.setQQZone("1105718030", "8WYKGmpNUOm2NZah")
 

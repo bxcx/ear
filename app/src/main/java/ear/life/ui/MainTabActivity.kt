@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hm.library.base.BaseMainActivity
 import com.hm.library.resource.draggridview.DragGridActivity
+import com.hm.library.resource.view.TipsToast
 import ear.life.R
 import ear.life.app.App
 import ear.life.app.DeviceInfoTool
@@ -70,8 +71,12 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
                 if (DeviceInfoTool.getVersion(ctx) < version.version)
                     AlertDialog(ctx).builder().setCancelable(true).setTitle("发现新版本：" + version.versionShort)
                             .setMsg(version.changelog).setNegativeButton("下次再说") {}.setPositiveButton("立即更新") {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(version.installUrl))
-                        startActivity(intent)
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(version.installUrl))
+                            startActivity(intent)
+                        } catch(e: Exception) {
+                            showTips(TipsToast.TipType.Error, "下载失败,请自行到官网下载")
+                        }
                     }.show()
 
             }

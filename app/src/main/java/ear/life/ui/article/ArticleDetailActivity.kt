@@ -135,7 +135,10 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         webView.isHorizontalScrollBarEnabled = false
         webView.addJavascriptInterface(this, "App")
 
-        webView.loadUrl(article?._url)
+        try {
+            webView.loadUrl(article?._url)
+        } catch(e: Exception) {
+        }
 
         showLoadProgerss()
         webView.setWebChromeClient(object : WebChromeClient() {
@@ -145,7 +148,10 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                     displayUI = true
                     runDelayed({
                         //webView嵌套有时会出现大面积空白, 所以在加载完成后, 重新设置一下它的高度
-                        webView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
+                        try {
+                            webView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
+                        } catch(e: Exception) {
+                        }
                     }, 3000)
                 }
             }
@@ -157,10 +163,13 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                 super.onPageStarted(view, url, favicon)
                 if (!url.equals(article?._url)) {
 
-                    val uri = Uri.parse(url)
-                    val iten = Intent(Intent.ACTION_VIEW, uri)
-                    startActivity(iten)
-                    finish(500)
+                    try {
+                        val uri = Uri.parse(url)
+                        val itent = Intent(Intent.ACTION_VIEW, uri)
+                        startActivity(itent)
+                        finish(500)
+                    } catch(e: Exception) {
+                    }
                 }
             }
 
@@ -185,7 +194,10 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                             "}" +
                             "}" +
                             "}()) "
-                    webView.loadUrl(js)
+                    try {
+                        webView.loadUrl(js)
+                    } catch(e: Exception) {
+                    }
                 }, 3000)
             }
         })
@@ -239,7 +251,10 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             //在webView高度不确定前不设置评论数据
             if (!hasResize) {
                 loadCompleted(arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null)))
-                webView.loadUrl(it?.post?._url)
+                try {
+                    webView.loadUrl(it?.post?._url)
+                } catch(e: Exception) {
+                }
             } else {
                 if (article != null && hasResize) {
                     var comments = article!!.comments
@@ -386,7 +401,10 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     override fun onResume() {
         super.onResume()
-        webView.onResume()
+        try {
+            webView.onResume()
+        } catch(e: Exception) {
+        }
 
         //先查查当前是否已经收藏过
         if (App.cookie != null && article != null) {
@@ -402,12 +420,18 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     override fun onPause() {
         super.onPause()
-        webView.onPause()
+        try {
+            webView.onPause()
+        } catch(e: Exception) {
+        }
     }
 
     override fun onDestroy() {
-        webView.destroy()
         super.onDestroy()
+        try {
+            webView.destroy()
+        } catch(e: Exception) {
+        }
     }
 
     class DialogComment(internal var context: Context, btText: String, hint: String) {
