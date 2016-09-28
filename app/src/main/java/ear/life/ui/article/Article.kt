@@ -135,7 +135,8 @@ class ArticleHolder(itemView: View) : BaseViewHolder<Article>(itemView) {
         }
 
         itemView.layout.onClick {
-            context.startActivity<ArticleDetailActivity>(ArgumentUtil.OBJ to data)
+//            context.startActivity<ArticleDetailActivity>(ArgumentUtil.OBJ to data)
+            context.startActivity<ArticleDetailActivity>(ArgumentUtil.TITLE to data.title!!, ArgumentUtil.ID to data.id!!)
         }
     }
 }

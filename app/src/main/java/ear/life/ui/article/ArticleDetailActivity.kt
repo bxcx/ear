@@ -37,10 +37,12 @@ import kotlinx.android.synthetic.main.item_comment.view.*
 import org.jetbrains.anko.act
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.onClick
+import java.io.File
 
 class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     var article: Article? = null
+    var articleID: Int = -1
     lateinit var webView: WebView
 
     var su: ShareUtils? = null
@@ -58,14 +60,21 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     }
 
     override fun checkParams(): Boolean {
-        if (extras.containsKey(ArgumentUtil.OBJ))
-            article = intent.getSerializableExtra(ArgumentUtil.OBJ) as Article
-        article = intent.getSerializableExtra(ArgumentUtil.OBJ) as Article
-        title = article?.title
-        if (article == null) {
+//        if (extras.containsKey(ArgumentUtil.OBJ))
+//            article = intent.getSerializableExtra(ArgumentUtil.OBJ) as Article
+//        article = intent.getSerializableExtra(ArgumentUtil.OBJ) as Article
+//        title = article?.title
+//        if (article == null) {
+//            finish()
+//        }
+
+        articleID = intent.getIntExtra(ArgumentUtil.ID, -1)
+        if (articleID == -1) {
             finish()
+        } else {
+            title = intent.getStringExtra(ArgumentUtil.TITLE)
         }
-        return article != null
+        return articleID != -1
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -78,42 +87,33 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                 return false
             }
 
+
             val mp3 = article?.custom_fields ?: return false
             if (mp3.mp3_address.size > 0) {
                 showLoading("下载中")
                 mp3.mp3_address.forEachIndexed { index, url ->
-                    HMRequest.download(url, App.LightMusicPath, mp3.mp3_title[index] + ".mp3", false, true, this) { progress, file ->
-                        if (file != null) {
-                            needRefeshMusicLise = true
-                            MediaScanner.scanFile(ctx, arrayOf(App.LightMusicPath), null) { path, uri ->
-                                runOnUiThread {
-                                    showTips(TipsToast.TipType.Success, "下载成功,请到纯音中试听")
+                    if (!File(App.LightMusicPath + "/" + mp3.mp3_title[index] + ".mp3").exists()) {
+                        HMRequest.download(url, App.LightMusicPath, mp3.mp3_title[index] + ".mp3", false, true, needCallBack = true) { progress, file ->
+                            if (progress == -1f || progress == 1f)
+                                cancelLoading()
+                            if (file != null) {
+                                needRefeshMusicLise = true
+                                MediaScanner.scanFile(ctx, arrayOf(App.LightMusicPath), null) { path, uri ->
+                                    runOnUiThread {
+                                        showTips(TipsToast.TipType.Success, "下载成功,请到纯音中试听")
+                                    }
                                 }
+                            } else if (progress == -1f) {
+                                showToast("下载出错,请稍候再试")
                             }
                         }
+                    } else {
+                        cancelLoading()
+                        showTips(TipsToast.TipType.Smile, "你已拥有这首歌曲")
                     }
 
                 }
             }
-
-            //
-//        OkHttpUtils.get().addHeader("User-Agent", "test").url("http://itingw.b0.upaiyun.com/乌拉尔的花楸树.mp3").build()
-//                .execute(object : FileCallBack(App.NatureSoundPath, "test.mp3") //
-//                {
-//                    override fun onResponse(response: File?) {
-//                        Logger.i("下载成功,保存在" + response?.absolutePath)
-//                        toast("下载成功,保存在" + response?.absolutePath)
-//                    }
-//
-//                    override fun onError(call: Call?, e: Exception?) {
-//                        toast(e?.message.toString())
-//                    }
-//
-//                    override fun inProgress(progress: Float) {
-//                        com.orhanobut.logger.Logger.e("$progress")
-//                    }
-//
-//                })
         }
 
         return super.onOptionsItemSelected(item)
@@ -151,15 +151,12 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             }
         })
         webView.setWebViewClient(object : WebViewClient() {
-//            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-////                view.loadUrl(url)
-//                return false
-//            }
+
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 if (!url.equals(article?._url)) {
-//                    view?.goBack()
+
                     val uri = Uri.parse(url)
                     val iten = Intent(Intent.ACTION_VIEW, uri)
                     startActivity(iten)
@@ -207,17 +204,11 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         })
     }
 
+    var hasInit = false
     override fun loadData() {
-        //在webView高度不确定前不设置评论数据
-        if (!hasResize) {
-            loadCompleted(arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null)))
-            return
-        }
-        var params = App.createParams
-        params.put("json", "get_post")
-        params.put("id", article?.id!!)
-        HMRequest.go<ArticleModel>(params = params) {
-            var comments = it?.post?.comments
+        if (!hasInit && article != null && hasResize) {
+            hasInit = true
+            var comments = article!!.comments
 
             if (comments?.size == 0) {
                 tv_comment_count.visibility = View.GONE
@@ -237,7 +228,54 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                 gotoComment = false
                 fragment!!.recyclerView!!.recyclerView.scrollBy(0, webView.layoutParams.height)
             }
+            return
         }
+
+        var params = App.createParams
+        params.put("json", "get_post")
+        params.put("id", articleID)
+        HMRequest.go<ArticleModel>(params = params) {
+            article = it?.post
+            //在webView高度不确定前不设置评论数据
+            if (!hasResize) {
+                loadCompleted(arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null)))
+                webView.loadUrl(it?.post?._url)
+            } else {
+                if (article != null && hasResize) {
+                    var comments = article!!.comments
+
+                    if (comments?.size == 0) {
+                        tv_comment_count.visibility = View.GONE
+                    } else {
+                        tv_comment_count.visibility = View.VISIBLE
+                        tv_comment_count.text = "${comments?.size}"
+                    }
+
+                    comments?.sortByDescending { it.id }
+                    if (comments == null || comments!!.size == 0) {
+                        comments = arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null))
+                    }
+                    loadCompleted(comments)
+
+                    cancelLoadProgerss()
+                    if (gotoComment) {
+                        gotoComment = false
+                        fragment!!.recyclerView!!.recyclerView.scrollBy(0, webView.layoutParams.height)
+                    }
+
+                }
+            }
+
+
+        }
+
+
+//        var params = App.createParams
+//        params.put("json", "get_post")
+//        params.put("id", articleID)
+//        HMRequest.go<ArticleModel>(params = params) {
+//
+//        }
     }
 
     var gotoComment: Boolean = false

@@ -74,7 +74,7 @@ class NatureFragment : BaseListFragment<NatureListModel.NautreModel, NautreHolde
     override fun setUIParams() {
         layoutResID = R.layout.fragment_nature_list
         itemResID = R.layout.item_nature
-        canRefesh = false
+        canRefesh = true
         canLoadmore = false
     }
 

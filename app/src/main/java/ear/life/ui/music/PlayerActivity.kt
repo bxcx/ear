@@ -9,8 +9,12 @@ import android.support.v7.graphics.Palette
 import android.widget.ImageView
 import android.widget.TextView
 import com.hm.library.base.BaseActivity
+import com.hm.library.resource.view.TipsToast
 import com.hm.library.resource.view.TipsToast.TipType.Smile
+import com.hm.library.umeng.share.IShareCallback
+import com.hm.library.umeng.share.ShareUtils
 import com.hm.library.util.ArgumentUtil
+import com.umeng.socialize.media.UMImage
 import ear.life.R
 import ear.life.app.App
 import ear.life.ui.music.MusicLoader.MusicInfo
@@ -28,8 +32,10 @@ class PlayerActivity : BaseActivity() {
     var mTimer: Timer = Timer()
     var mTimerTask: TimerTask? = null
 
+    var su: ShareUtils? = null
+
     override fun setUIParams() {
-        layoutResID= R.layout.activity_player
+        layoutResID = R.layout.activity_player
         hideActionBar = true
         immersedStatusbar = true
     }
@@ -75,6 +81,24 @@ class PlayerActivity : BaseActivity() {
             }
         }
         mTimer.schedule(mTimerTask, 0, 2000)
+
+        iv_share.setColorFilter(0xffffff)
+        iv_share.onClick {
+            if (musicInfo == null)
+                return@onClick
+            su = ShareUtils(act)
+            su?.share(musicInfo?.title, "http://fir.im/ear", "总有一些音乐，宠坏了我们的耳朵", UMImage(ctx, R.drawable.ic_launcher), object : IShareCallback {
+                override fun onSuccess() {
+                    showTips(TipsToast.TipType.Smile, "分享成功")
+                }
+
+                override fun onFaild() {
+                }
+
+                override fun onCancel() {
+                }
+            })
+        }
 
         iv_play.onClick {
 
@@ -166,7 +190,7 @@ class PlayerActivity : BaseActivity() {
 
         album_art.setCoverDrawable(BitmapDrawable(bmp))
         Palette.generateAsync(bmp) { palette ->
-            val array_bodyTextColor = arrayOf(tv_name, tv_artist, iv_play, iv_play_last, iv_play_next, iv_player_mode, iv_play_list)
+            val array_bodyTextColor = arrayOf(tv_name, tv_artist, iv_back, iv_share, iv_play, iv_play_last, iv_play_next, iv_player_mode, iv_play_list)
 
             val mutedSwatch = palette.mutedSwatch
             var rgb = -1
@@ -214,6 +238,7 @@ class PlayerActivity : BaseActivity() {
             when (requestCode) {
                 1 -> album_art.progress = 0
             }
+            su?.onActivityResult(requestCode, resultCode, data)
         }
     }
 

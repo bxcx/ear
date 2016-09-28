@@ -23,6 +23,7 @@
             att:mrl_rippleOverlay="true">
 
             <ImageView
+                android:id="@+id/iv_back"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
@@ -41,6 +42,7 @@
             att:mrl_rippleOverlay="true">
 
             <ImageView
+                android:id="@+id/iv_share"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"

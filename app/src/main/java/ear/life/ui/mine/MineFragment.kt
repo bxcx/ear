@@ -3,6 +3,7 @@ package ear.life.ui.mine
 
 import android.content.Intent
 import android.graphics.Color
+import android.view.View
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI
 import com.hm.library.base.BaseFragment
 import com.hm.library.expansion.show
@@ -20,9 +21,11 @@ import kotlinx.android.synthetic.main.fragment_mine.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.support.v4.act
 import org.jetbrains.anko.support.v4.ctx
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.startActivityForResult
 
-class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : BaseFragment() {
+class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : BaseFragment(), View.OnClickListener {
+
 
     companion object {
         val Action_Login = 20
@@ -48,7 +51,10 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
         if (layout_feedback == null)
             return
         layout_feedback.onClick {
-            FeedbackAPI.openFeedbackActivity(ctx)
+            try {
+                FeedbackAPI.openFeedbackActivity(ctx)
+            } catch(e: Exception) {
+            }
         }
         layout_share.onClick {
             su = ShareUtils(act)
@@ -81,8 +87,21 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
         iv_head.onClick {
             if (App.user == null) {
                 startActivityForResult<LoginActivity>(Action_Login)
+            } else {
+                showTips(TipsToast.TipType.Smile, "请前往网站修改资料")
             }
         }
+
+        layout_collection.setOnClickListener {
+            if (App.checkCookie(act)) {
+                startActivity<MyCollectionActivity>()
+            }
+        }
+        layout_yejian.setOnClickListener(this)
+        layout_setting.setOnClickListener(this)
+        layout_message.setOnClickListener(this)
+        layout_activity.setOnClickListener(this)
+        layout_join.setOnClickListener(this)
 
         if (App.user == null) {
             iv_head.setImageResource(R.drawable.ic_launcher)
@@ -94,6 +113,10 @@ class MineFragment(override var layoutResID: Int = R.layout.fragment_mine) : Bas
         iv_head.show(App.user?.avatar)
         tv_name.text = App.user?.nickname
         tv_login.text = "注销"
+    }
+
+    override fun onClick(p0: View?) {
+        showToast("即将开放")
     }
 
     override fun onResume() {

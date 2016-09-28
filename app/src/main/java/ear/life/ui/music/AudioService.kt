@@ -6,7 +6,6 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import com.hm.library.app.Cacher
-import com.orhanobut.logger.Logger
 import ear.life.ui.music.MusicLoader.MusicInfo
 import java.io.File
 import java.util.*
@@ -172,7 +171,6 @@ class AudioService : Service(), MediaPlayer.OnCompletionListener {
         }
 
         val musicInfo = prepare()
-        Logger.w(musicInfo.duration.toString())
         mMediaPlayer.start()
         completionHandler(musicInfo)
 

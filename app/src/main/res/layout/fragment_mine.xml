@@ -42,7 +42,7 @@
             android:orientation="horizontal">
 
             <com.balysv.materialripple.MaterialRippleLayout
-                android:id="@+id/layout_top"
+                android:id="@+id/layout_collection"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
@@ -79,6 +79,7 @@
                 android:background="#e8e8e8"/>
 
             <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/layout_yejian"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
@@ -116,6 +117,7 @@
                 android:background="#e8e8e8"/>
 
             <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/layout_setting"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
@@ -168,6 +170,7 @@
             android:orientation="vertical">
 
             <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/layout_message"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -206,6 +209,7 @@
             </com.balysv.materialripple.MaterialRippleLayout>
 
             <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/layout_activity"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -322,6 +326,7 @@
             </com.balysv.materialripple.MaterialRippleLayout>
 
             <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/layout_join"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -380,7 +385,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="5dp"
-                        android:text="注销"
+                        android:text="登录"
                         android:textColor="#505050"
                         android:textSize="16sp"/>
 

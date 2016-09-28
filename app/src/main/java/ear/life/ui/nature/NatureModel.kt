@@ -106,7 +106,7 @@ class NautreHolder(itemView: View) : BaseViewHolder<NatureListModel.NautreModel>
                 } else {
                     data.isDownloading = true
                     startDownload()
-                    HMRequest.download(data.src!!, path, fileName, false, false, context as Activity, { progress, file ->
+                    HMRequest.download(data.src!!, path, fileName, false, false, context as Activity, false, { progress, file ->
                         if (progress!! < 1) {
                             itemView.bar_vol.progress = (progress * 100).toInt()
                         } else {

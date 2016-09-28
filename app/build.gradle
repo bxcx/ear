@@ -10,8 +10,8 @@ android {
         applicationId "ear.life"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 5
+        versionName "1.0.4"
     }
     buildTypes {
         release {
@@ -35,7 +35,7 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:palette-v7:24.2.1'
 
-    compile 'com.github.bxcx:HMLibrary:ae04c194cb'
+    compile 'com.github.bxcx:HMLibrary:c102182540'
     //分享
     compile 'com.github.bxcx:HMUmeng_Share:v0.0.1'
 
