@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/layout_content"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:att="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+    <com.hm.library.resource.recyclerview.PullRefreshLoadRecyclerView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F5F5F5"
+        android:scrollbars="vertical"
+        />
+
+    <com.balysv.materialripple.MaterialRippleLayout
+        android:id="@+id/iv_filter"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        android:background="@color/colorPrimary"
+        att:mrl_rippleAlpha="0.1"
+        att:mrl_rippleColor="#ffffff"
+        att:mrl_rippleOverlay="true">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/icon_filter"/>
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+
+</RelativeLayout>

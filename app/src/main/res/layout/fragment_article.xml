@@ -10,20 +10,21 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_toLeftOf="@+id/iv_plus"
+        android:layout_toLeftOf="@+id/iv_search"
         android:background="@color/colorPrimary"
         android:fillViewport="false"
         att:pstsDividerColor="@android:color/transparent"
         att:pstsIndicatorColor="@android:color/white"
         att:pstsIndicatorHeight="5dp"
+        att:pstsTabPaddingLeftRight="10dp"
         att:pstsUnderlineColor="@android:color/transparent"
-        att:zmsSelectedTabTextSize="16sp"
+        att:zmsSelectedTabTextSize="15sp"
         att:zmsTabTextColor="@color/tabstrip_title_color"
-        att:zmsTabTextSize="14sp"
+        att:zmsTabTextSize="13sp"
         />
 
     <com.balysv.materialripple.MaterialRippleLayout
-        android:id="@+id/iv_plus"
+        android:id="@+id/iv_search"
         android:layout_width="wrap_content"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentRight="true"
@@ -32,13 +33,12 @@
         att:mrl_rippleOverlay="true">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
-
             android:background="@color/colorPrimary"
-            android:padding="3dp"
-            android:scaleType="center"
-            android:src="@drawable/icon_plus"/>
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_search"/>
     </com.balysv.materialripple.MaterialRippleLayout>
 
     <android.support.v4.view.ViewPager

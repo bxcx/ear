@@ -5,7 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.hm.hmlibrary.ui.article.CategorieListModel
+import com.hm.library.app.Cacher
 import com.hm.library.base.BaseMainActivity
+import com.hm.library.http.HMRequest
 import com.hm.library.resource.draggridview.DragGridActivity
 import com.hm.library.resource.view.TipsToast
 import ear.life.R
@@ -63,6 +66,12 @@ class MainTabActivity(override var layoutResID: Int = R.layout.activity_main_tab
         //是否可以滑动，滑动是否有渐变效果
         main_tabpage.setStyle(false, false)
 
+        val params = App.createParams
+        params.put("json", "get_category_index")
+
+        HMRequest.go<CategorieListModel>(params = params) {
+            Cacher[ArticleFragment.ChannelAll] = it?.categories
+        }
 
         FIR.checkForUpdateInFIR(App.api_token, object : VersionCheckCallback() {
 

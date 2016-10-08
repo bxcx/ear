@@ -95,8 +95,8 @@ open class LinghtMusicFragment : BaseListFragment<MusicInfo, LinghtMusicFragment
 
     override fun onResume() {
         super.onResume()
-        if (ArticleDetailActivity.needRefeshMusicLise) {
-            ArticleDetailActivity.needRefeshMusicLise = false
+        if (ArticleDetailActivity.needRefeshMusicList) {
+            ArticleDetailActivity.needRefeshMusicList = false
             loadRefresh()
         }
     }

@@ -11,10 +11,11 @@ import com.hm.library.http.HMRequest
 import com.hm.library.resource.draggridview.DragGridActivity
 import com.hm.library.resource.view.TipsToast
 import ear.life.R
+import ear.life.http.HttpServerPath
 import kotlinx.android.synthetic.main.fragment_article.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.support.v4.act
-import org.jetbrains.anko.support.v4.startActivityForResult
+import org.jetbrains.anko.support.v4.startActivity
 import java.util.*
 
 /**
@@ -23,7 +24,7 @@ import java.util.*
 class ArticleFragment(override var layoutResID: Int = R.layout.fragment_article) : BaseFragment() {
 
     companion object {
-        val Channel1st = "Channel1st"
+        val Channel1st = "Channel1st2"
         val ChannelAll = "ChannelAll"
         val MyChannel = "MyChannel"
     }
@@ -32,29 +33,24 @@ class ArticleFragment(override var layoutResID: Int = R.layout.fragment_article)
     var channelList: ArrayList<CategorieListModel.CategorieModel>? = null
 
     override fun loadData() {
-
+        //v1.0.5版本去掉用户自定义功能
         //先加载用户本地保存的分类信息,如果用户有自己保存则只显示用户自己的
-        channelList = Cacher[MyChannel]
+//        channelList = Cacher[MyChannel]
 
         //如果没有用户评阅的分类, 那查看本地有没有缓存所有一级频道
         if (channelList == null || channelList!!.size == 0)
             channelList = Cacher[Channel1st]
 
         //好吧, 都没有的话, 我们查询API
-        //API地址: http://ear.life?json=get_category_index
         if (channelList == null || channelList!!.size == 0) {
-            val params = HashMap<String, Any>()
-            params.put("json", "get_category_index")
 
-            HMRequest.go<CategorieListModel>(params = params) {
+            HMRequest.go<CategorieListModel>(HttpServerPath.Server_Category,activity = act) {
                 channelList = it?.categories
-                //过滤非一级频道
-                channelList = channelList!!.filter { it.parent == 0 } as ArrayList<CategorieListModel.CategorieModel>
                 //在最前面加一个"最新"的频道, 按发布时间来查看
-                val all = CategorieListModel.CategorieModel(-1, "", "最新", "", 0, -1)
-                channelList!!.add(0, all)
+//                val all = CategorieListModel.CategorieModel(-1, "", "最新", "", 0, -1)
+//                channelList!!.add(0, all)
                 //将频道保存到本地
-                Cacher[Channel1st] = channelList
+                //Cacher[Channel1st] = channelList
                 initUI()
             }
 
@@ -64,60 +60,69 @@ class ArticleFragment(override var layoutResID: Int = R.layout.fragment_article)
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (channelList == null || channelList!!.size == 0) {
+            loadData()
+        }
+    }
+
     override fun initUI() {
         super.initUI()
 
         if (pager == null) {
-            showToast("初始化错误,请反馈")
+            showToast("初始化错误,请重试")
             return
         }
 
         pager.adapter = MyPagerAdapter()
         tabs.setViewPager(pager)
         tabs.setCurrentPosition(0)
-
-        iv_plus.onClick {
-            showLoading()
-
-            val params = HashMap<String, Any>()
-            params.put("json", "get_category_index")
-            HMRequest.go<CategorieListModel>(params = params, activity = act) {
-                cancelLoading()
-
-                var channelAll = it?.categories
-                if (channelAll != null && channelAll.size > 0) {
-
-//                    channelAll.sortByDescending { it.post_count }
-                    val all = CategorieListModel.CategorieModel(-1, "", "最新", "", 0, -1)
-                    channelAll.add(0, all)
-                    Cacher[Channel1st] = channelAll.filter { it.parent == 0 }
-                    Cacher[ChannelAll] = channelAll
-
-                    val userList: ArrayList<CategorieListModel.CategorieModel>? = Cacher[MyChannel]
-
-                    val mUserList = ArrayList<String>()
-                    val mOtherList = ArrayList<String>()
-
-                    if (userList == null) {
-                        mUserList.add("最新")
-                        mUserList.add("乐器")
-                    } else {
-                        for (channel in userList) {
-                            mUserList.add(channel.title)
-                        }
-                    }
-                    for (channel in channelAll) {
-                        val title = channel.title
-                        if (mUserList.contains(title))
-                            continue
-                        mOtherList.add(title)
-                    }
-
-                    startActivityForResult<DragGridActivity>(DragGridActivity.Selection, DragGridActivity.UserList to mUserList, DragGridActivity.OtherList to mOtherList)
-                }
-            }
-
+        iv_search.onClick {
+            startActivity<SearchActivity>()
         }
+//        iv_plus.onClick {
+//            showLoading()
+//
+//            val params = HashMap<String, Any>()
+//            params.put("json", "get_category_index")
+//            HMRequest.go<CategorieListModel>(params = params, activity = act) {
+//                cancelLoading()
+//
+//                var channelAll = it?.categories
+//                if (channelAll != null && channelAll.size > 0) {
+//
+////                    channelAll.sortByDescending { it.post_count }
+//                    val all = CategorieListModel.CategorieModel(-1, "", "最新", "", 0, -1)
+//                    channelAll.add(0, all)
+//                    Cacher[Channel1st] = channelAll.filter { it.parent == 0 }
+//                    Cacher[ChannelAll] = channelAll
+//
+//                    val userList: ArrayList<CategorieListModel.CategorieModel>? = Cacher[MyChannel]
+//
+//                    val mUserList = ArrayList<String>()
+//                    val mOtherList = ArrayList<String>()
+//
+//                    if (userList == null) {
+//                        mUserList.add("最新")
+//                        mUserList.add("乐器")
+//                    } else {
+//                        for (channel in userList) {
+//                            mUserList.add(channel.title)
+//                        }
+//                    }
+//                    for (channel in channelAll.filter { it.parent == 0 }) {
+//                        val title = channel.title
+//                        if (mUserList.contains(title))
+//                            continue
+//                        mOtherList.add(title)
+//                    }
+//
+//                    startActivityForResult<DragGridActivity>(DragGridActivity.Selection, DragGridActivity.UserList to mUserList, DragGridActivity.OtherList to mOtherList)
+//                }
+//            }
+//
+//        }
     }
 
     inner class MyPagerAdapter : FragmentPagerAdapter(fragmentManager) {

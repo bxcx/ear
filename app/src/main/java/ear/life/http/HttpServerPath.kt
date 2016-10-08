@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.hm.library.http.HMExceptionInfo
 import ear.life.app.App
 import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 /**
@@ -15,12 +16,15 @@ import java.net.UnknownHostException
 object HttpServerPath : HMExceptionInfo {
 
     val MAIN = "https://ear.life"
+    val Image = "clouddn.com"
     val Server_Nature = MAIN + "/api/getNature.php"
+    val Server_Category = MAIN + "/api/getCategory.php"
 
     override fun parseError(e: Exception): String {
         var domain = when (e) {
             is ConnectException,
-            is UnknownHostException
+            is UnknownHostException,
+            is SocketTimeoutException
             -> "网络不佳"
             else -> "未知错误"
         }

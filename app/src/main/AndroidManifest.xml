@@ -59,6 +59,20 @@
             android:name="UMENG_CHANNEL"
             android:value="base"/>
 
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="tencent1105718030"/>
+            </intent-filter>
+        </activity>
+
         <service android:name=".ui.music.AudioService"/>
 
         <activity
@@ -72,6 +86,7 @@
         </activity>
         <activity
             android:name=".ui.MainTabActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme">
         </activity>
@@ -80,6 +95,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.article.ArticleDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.LoginActivity"
@@ -95,6 +112,11 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.mine.MyCollectionActivity">
         </activity>
+        <activity android:name=".ui.PhotoActivity"/>
+        <activity
+            android:name=".ui.article.SearchActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
     </application>
 
 </manifest>

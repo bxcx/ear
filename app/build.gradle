@@ -10,8 +10,8 @@ android {
         applicationId "ear.life"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 5
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.0.5"
     }
     buildTypes {
         release {
@@ -35,7 +35,7 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:palette-v7:24.2.1'
 
-    compile 'com.github.bxcx:HMLibrary:c102182540'
+    compile 'com.github.bxcx:HMLibrary:17a8232025'
     //分享
     compile 'com.github.bxcx:HMUmeng_Share:v0.0.1'
 
@@ -52,4 +52,7 @@ dependencies {
     compile 'jp.wasabeef:blurry:2.0.3'
 
     compile 'im.fir:fir-sdk:latest.integration@aar'
+
+    //https://github.com/bm-x/PhotoView
+    compile 'com.bm.photoview:library:1.4.1'
 }

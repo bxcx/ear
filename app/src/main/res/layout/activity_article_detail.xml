@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/body"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:att="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,10 +9,86 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/iv_back"
+            android:layout_width="52dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_back"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/iv_down"
+            android:layout_toRightOf="@+id/iv_back"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="午后柠檬树下的阳光"
+                android:textColor="#ffffff"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_song"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/iv_back"
+                android:singleLine="true"
+                android:text="曲名:ciao！bravo！！"
+                android:textColor="#ffffff"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/iv_down"
+            android:layout_width="52dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            att:mrl_rippleAlpha="0.1"
+            att:mrl_rippleColor="#ffffff"
+            att:mrl_rippleOverlay="true">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_down"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layout_comment"/>
+        android:layout_above="@+id/layout_comment"
+        android:layout_below="@+id/layout_title"/>
 
     <RelativeLayout
         android:id="@+id/layout_comment"

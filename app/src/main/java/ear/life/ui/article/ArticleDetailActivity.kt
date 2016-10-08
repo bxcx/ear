@@ -3,6 +3,7 @@ package ear.life.ui.article
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.text.TextUtils
@@ -11,6 +12,7 @@ import android.webkit.*
 import android.widget.EditText
 import com.hm.hmlibrary.ui.article.Article
 import com.hm.hmlibrary.ui.article.ArticleModel
+import com.hm.library.app.Cacher
 import com.hm.library.base.BaseListActivity
 import com.hm.library.base.BaseViewHolder
 import com.hm.library.expansion.show
@@ -31,95 +33,51 @@ import ear.life.extension.showSoftInput
 import ear.life.http.BaseModel
 import ear.life.http.CommentModel
 import ear.life.http.FavoriteModel
+import ear.life.http.HttpServerPath
+import ear.life.ui.PhotoActivity
 import ear.life.ui.article.ArticleDetailActivity.CommentHolder
+import ear.life.ui.view.AlertDialog
 import kotlinx.android.synthetic.main.activity_article_detail.*
 import kotlinx.android.synthetic.main.item_comment.view.*
 import org.jetbrains.anko.act
 import org.jetbrains.anko.ctx
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.startActivity
 import java.io.File
+import java.util.*
 
 class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
     var article: Article? = null
+    var shared = false
     var articleID: Int = -1
     lateinit var webView: WebView
 
     var su: ShareUtils? = null
 
     companion object {
-        var needRefeshMusicLise = false
+        var needRefeshMusicList = false
     }
 
     override fun setUIParams() {
         layoutResID = R.layout.activity_article_detail
         itemResID = R.layout.item_comment
-        menuResID = R.menu.menu_article_detail
+        hideActionBar = true
         canRefesh = true
         canLoadmore = false
     }
 
     override fun checkParams(): Boolean {
-//        if (extras.containsKey(ArgumentUtil.OBJ))
-//            article = intent.getSerializableExtra(ArgumentUtil.OBJ) as Article
-//        article = intent.getSerializableExtra(ArgumentUtil.OBJ) as Article
-//        title = article?.title
-//        if (article == null) {
-//            finish()
-//        }
-
         articleID = intent.getIntExtra(ArgumentUtil.ID, -1)
         if (articleID == -1) {
             finish()
-        } else {
-            title = intent.getStringExtra(ArgumentUtil.TITLE)
         }
         return articleID != -1
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_download) {
-            if (article == null)
-                return false
-
-            if (article!!.custom_fields == null || !article!!.custom_fields!!.valid) {
-                showTips(TipsToast.TipType.Error, "这首音乐暂未提供下载")
-                return false
-            }
-
-
-            val mp3 = article?.custom_fields ?: return false
-            if (mp3.mp3_address.size > 0) {
-                showLoading("下载中")
-                mp3.mp3_address.forEachIndexed { index, url ->
-                    if (!File(App.LightMusicPath + "/" + mp3.mp3_title[index] + ".mp3").exists()) {
-                        HMRequest.download(url, App.LightMusicPath, mp3.mp3_title[index] + ".mp3", false, true, needCallBack = true) { progress, file ->
-                            if (progress == -1f || progress == 1f)
-                                cancelLoading()
-                            if (file != null) {
-                                needRefeshMusicLise = true
-                                MediaScanner.scanFile(ctx, arrayOf(App.LightMusicPath), null) { path, uri ->
-                                    runOnUiThread {
-                                        showTips(TipsToast.TipType.Success, "下载成功,请到纯音中试听")
-                                    }
-                                }
-                            } else if (progress == -1f) {
-                                showToast("下载出错,请稍候再试")
-                            }
-                        }
-                    } else {
-                        cancelLoading()
-                        showTips(TipsToast.TipType.Smile, "你已拥有这首歌曲")
-                    }
-
-                }
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
     var displayUI: Boolean = false
+    private var myView: View? = null
+    private var myCallBack: WebChromeClient.CustomViewCallback? = null
     override fun setHeaderView() {
         webView = WebView(this)
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
@@ -129,8 +87,11 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         settings.javaScriptEnabled = true
         settings.loadsImagesAutomatically = true
         settings.loadWithOverviewMode = false
+        settings.javaScriptCanOpenWindowsAutomatically = true
         settings.domStorageEnabled = true
         settings.cacheMode = WebSettings.LOAD_NO_CACHE
+        settings.allowFileAccess = true
+        settings.databaseEnabled = true
 
         webView.isHorizontalScrollBarEnabled = false
         webView.addJavascriptInterface(this, "App")
@@ -142,6 +103,29 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
         showLoadProgerss()
         webView.setWebChromeClient(object : WebChromeClient() {
+
+            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                //设置横屏
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                myCallBack = callback
+                body.addView(view)
+                myView = view
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+
+            override fun onHideCustomView() {
+                if (myView == null) {
+                    return
+                }
+                //设置竖屏
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+                //隐藏视频
+                body.removeView(myView)
+                myView = null
+                myCallBack?.onCustomViewHidden()
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (!displayUI && newProgress > 80) {
@@ -158,15 +142,12 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         })
         webView.setWebViewClient(object : WebViewClient() {
 
-
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 if (!url.equals(article?._url)) {
 
                     try {
-                        val uri = Uri.parse(url)
-                        val itent = Intent(Intent.ACTION_VIEW, uri)
-                        startActivity(itent)
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                         finish(500)
                     } catch(e: Exception) {
                     }
@@ -199,9 +180,26 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
                     } catch(e: Exception) {
                     }
                 }, 3000)
+
+                webView.loadUrl("javascript:(function(){" +
+                        "var objs = document.getElementsByTagName(\"img\"); " +
+                        "for(var i=0;i<objs.length;i++)  " +
+                        "{"
+                        + "  window.App.addPhoto(objs[i].src);  "
+                        + "  objs[i].onclick=function()  " +
+                        "    {  "
+                        + "      window.App.click(this.src);  " +
+                        "    }  " +
+                        "}" +
+                        "})()");
             }
         })
+
         fragment!!.recyclerView!!.addHeaderView(webView)
+
+        runDelayed({
+            cancelLoadProgerss()
+        }, 5000)
     }
 
     var hasResize = false
@@ -214,6 +212,21 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             fragment!!.loadRefresh()
 
         })
+    }
+
+    //查看图片url
+    @JavascriptInterface
+    fun click(url: String) {
+        if (photos.size == 0 && photos.indexOf(url) > 0)
+            return
+        startActivity<PhotoActivity>(PhotoActivity.PhotoArray to photos, PhotoActivity.SavePath to App.ImagePath, PhotoActivity.Index to photos.indexOf(url))
+    }
+
+    var photos: ArrayList<String> = ArrayList()
+    @JavascriptInterface
+    fun addPhoto(url: String) {
+        if (url.contains(HttpServerPath.Image))
+            photos.add(url)
     }
 
     var hasInit = false
@@ -248,6 +261,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         params.put("id", articleID)
         HMRequest.go<ArticleModel>(params = params) {
             article = it?.post
+            initUI()
             //在webView高度不确定前不设置评论数据
             if (!hasResize) {
                 loadCompleted(arrayListOf(CommentModel(-1, "", "", "", "", "暂无评论", 0, null)))
@@ -296,6 +310,19 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     var gotoComment: Boolean = false
     override fun initUI() {
         super.initUI()
+        if (article == null)
+            return
+
+        iv_back.onClick { finish() }
+        iv_down.onClick { download() }
+
+        tv_title.text = article!!.title
+        if (article!!.title.equals(article!!._excerpt)) {
+            tv_song.visibility = View.GONE
+        } else {
+            tv_song.visibility = View.VISIBLE
+            tv_song.text = "曲名：" + article!!._excerpt
+        }
 
         tv_comment.onClick {
             if (!App.checkCookie(this)) {
@@ -329,30 +356,97 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             }
         }
 
-        iv_share.onClick {
-            if (article == null)
-                return@onClick
-            val image: UMImage
-            if (article!!.attachments != null && article!!.attachments!!.size > 0) {
-                image = UMImage(ctx, article!!.attachments!![0].images.thumbnail.url)
-            } else {
-                image = UMImage(ctx, R.drawable.ic_launcher)
-            }
+        iv_share.onClick { share() }
 
-            su = ShareUtils(act)
-            su?.share(article!!.title, article!!._url, article!!._excerpt, image, object : IShareCallback {
-                override fun onSuccess() {
-                    showTips(TipsToast.TipType.Smile, "分享成功")
-                }
+    }
 
-                override fun onFaild() {
-                }
-
-                override fun onCancel() {
-                }
-            })
+    fun share() {
+        if (article == null)
+            return
+        val image: UMImage
+        if (article!!.attachments != null && article!!.attachments!!.size > 0) {
+            image = UMImage(ctx, article!!.attachments!![0].images.thumbnail.url)
+        } else {
+            image = UMImage(ctx, R.drawable.ic_launcher)
         }
 
+        su = ShareUtils(act)
+        su?.share(article!!.title, article!!._url, article!!._share, image, object : IShareCallback {
+            override fun onSuccess() {
+                shared = true
+                showTips(TipsToast.TipType.Smile, "分享成功")
+            }
+
+            override fun onFaild() {
+            }
+
+            override fun onCancel() {
+            }
+        })
+    }
+
+    fun download() {
+        if (article == null)
+            return
+
+        if (!App.checkCookie(this)) {
+            return
+        }
+
+        if (!shared) {
+            showTips(TipsToast.TipType.Smile, "分享成功后即可下载")
+            share()
+            return
+        }
+
+        var readed: String? = Cacher["readed"]
+        if (TextUtils.isEmpty(readed)) {
+            AlertDialog(ctx).builder().setCancelable(true).setTitle("友情提示")
+                    .setMsg("唱片版权归发行公司所有，耳朵纯音乐仅供交流分享，请与下载后24小时内删除下载相关文件，如若喜欢请购买正版专辑收藏，谢谢合作！").setNegativeButton("不再提示") {
+                Cacher["readed"] = "true"
+                doDownload()
+            }.setPositiveButton("我知道了") {
+                doDownload()
+            }.show()
+        } else {
+            doDownload()
+        }
+
+
+    }
+
+    fun doDownload() {
+        if (article!!.custom_fields == null || !article!!.custom_fields!!.valid) {
+            showTips(TipsToast.TipType.Error, "这首音乐暂未提供下载")
+            return
+        }
+
+        val mp3 = article?.custom_fields ?: return
+        if (mp3.mp3_address.size > 0) {
+            showLoading("下载中")
+            mp3.mp3_address.forEachIndexed { index, url ->
+                if (!File(App.LightMusicPath + "/" + mp3.mp3_title[index] + ".mp3").exists()) {
+                    HMRequest.download(url, App.LightMusicPath, mp3.mp3_title[index] + ".mp3", false, true, needCallBack = true, activity = this) { progress, file ->
+                        if (progress == -1f || progress == 1f)
+                            cancelLoading()
+                        if (file != null) {
+                            needRefeshMusicList = true
+                            MediaScanner.scanFile(ctx, arrayOf(App.LightMusicPath), null) { path, uri ->
+                                runOnUiThread {
+                                    showTips(TipsToast.TipType.Success, "下载成功,请到纯音中试听")
+                                }
+                            }
+                        } else if (progress == -1f) {
+                            showToast("下载出错,请稍候再试")
+                        }
+                    }
+                } else {
+                    cancelLoading()
+                    showTips(TipsToast.TipType.Smile, "你已拥有这首歌曲")
+                }
+
+            }
+        }
     }
 
     fun showComment(replayId: String, hint: String) {

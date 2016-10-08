@@ -7,6 +7,7 @@ import com.hm.library.expansion.show
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
 import com.hm.library.util.ImageUtil
+import com.orhanobut.logger.Logger
 import ear.life.R
 import ear.life.http.AttachmentModel
 import ear.life.http.BaseModel
@@ -48,6 +49,12 @@ class ArticleListModel(var posts: ArrayList<Article>) : BaseModel() {
                     return false
                 if (mp3_address.size != mp3_author.size || mp3_address.size != mp3_title.size)
                     return false
+                mp3_address.forEach {
+                    if (!(it.startsWith("http://") && it.endsWith(".mp3"))) {
+                        return false
+                    }
+                }
+
                 return true
             }
     }
@@ -79,21 +86,56 @@ class Article(
         var _likeCount: String?
 ) : Serializable {
 
+    var _share: String = ""
+        get() {
+            try {
+                var str = "耳朵纯音乐 | "
+                val array = _content.split("\n")
+                for (i in 0..2) {
+                    str += array[i] + "\n"
+                }
+                return str
+            } catch(e: Exception) {
+                Logger.e(e.message)
+            }
+            return title!!
+        }
+
+    private var t_content: String = ""
+    var _content: String = ""
+        get() {
+            if (TextUtils.isEmpty(t_content)) {
+                try {
+                    t_content = HtmlUtil.splitAndFilterString(content)
+                    t_content = t_content.replace("Read more", "", true)
+
+                    val index = t_content.lastIndexOf("\n")
+                    _likeCount = t_content.substring(index + 1)
+                    t_content = t_content.substring(0, index)
+                    t_content = t_content.trim()
+                } catch(e: Exception) {
+                }
+            }
+            return t_content
+        }
+
     private var t_excerpt: String = ""
     var _excerpt: String = ""
         get() {
-            if (TextUtils.isEmpty(t_excerpt)) {
-                t_excerpt = HtmlUtil.splitAndFilterString(content)
-                t_excerpt = t_excerpt.replace("Read more", "", true)
-
-                val index = t_excerpt.lastIndexOf("\n")
-                _likeCount = t_excerpt.substring(index + 1)
-                t_excerpt = t_excerpt.substring(0, index)
-                t_excerpt = t_excerpt.trim()
+            if (!TextUtils.isEmpty(excerpt) && TextUtils.isEmpty(t_excerpt)) {
+                try {
+                    t_excerpt = excerpt!!.substring(3, excerpt!!.indexOf("</p>"))
+//                t_excerpt = t_excerpt.replace("Read more", "", true)
+//
+//                val index = t_excerpt.lastIndexOf("\n")
+//                _likeCount = t_excerpt.substring(index + 1)
+//                t_excerpt = t_excerpt.substring(0, index)
+                    t_excerpt = t_excerpt.trim()
+                } catch(e: Exception) {
+                }
             }
             return t_excerpt
         }
-
 
     var _url: String? = ""
         get() = url?.replace("https://", "http://")
@@ -104,16 +146,7 @@ class ArticleHolder(itemView: View) : BaseViewHolder<Article>(itemView) {
     override fun setContent(position: Int) {
 
         itemView.tv_title.text = data.title
-//        if (TextUtils.isEmpty(data._likeCount)) {
-//            data._excerpt = HtmlUtil.splitAndFilterString(data.content)
-//            data._excerpt = data._excerpt?.replace("Read more", "", true)
-//            val index = data._excerpt?.lastIndexOf("\n")
-//            data._likeCount = data._excerpt?.substring(index!! + 1)
-//            data._excerpt = data._excerpt?.substring(0, index!!)
-//            data._excerpt = data._excerpt?.trim()
-//        }
-
-        itemView.tv_excerpt.text = data._excerpt
+        itemView.tv_excerpt.text = data._content
         itemView.iv_head.show(data.author?.avatar, ImageUtil.CircleDisplayImageOptions(R.drawable.ic_launcher))
 
         if (data._categories == null) {
