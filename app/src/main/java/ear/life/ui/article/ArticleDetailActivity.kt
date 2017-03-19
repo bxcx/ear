@@ -24,6 +24,7 @@ import com.hm.library.umeng.share.ShareUtils
 import com.hm.library.util.ArgumentUtil
 import com.hm.library.util.HtmlUtil
 import com.hm.library.util.ImageUtil
+import com.orhanobut.logger.Logger
 import com.rey.material.widget.Button
 import com.umeng.socialize.media.UMImage
 import ear.life.R
@@ -37,6 +38,7 @@ import ear.life.http.HttpServerPath
 import ear.life.ui.PhotoActivity
 import ear.life.ui.article.ArticleDetailActivity.CommentHolder
 import ear.life.ui.view.AlertDialog
+import ear.life.ui.view.ScrollWebView
 import kotlinx.android.synthetic.main.activity_article_detail.*
 import kotlinx.android.synthetic.main.item_comment.view.*
 import org.jetbrains.anko.act
@@ -51,7 +53,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     var article: Article? = null
     var shared = false
     var articleID: Int = -1
-    lateinit var webView: WebView
+    lateinit var webView: ScrollWebView
 
     var su: ShareUtils? = null
 
@@ -65,6 +67,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         hideActionBar = true
         canRefesh = true
         canLoadmore = false
+        autoLoad = false
     }
 
     override fun checkParams(): Boolean {
@@ -79,7 +82,7 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     private var myView: View? = null
     private var myCallBack: WebChromeClient.CustomViewCallback? = null
     override fun setHeaderView() {
-        webView = WebView(this)
+        webView = ScrollWebView(this)
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
         val settings = webView.settings
 
@@ -95,6 +98,22 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
 
         webView.isHorizontalScrollBarEnabled = false
         webView.addJavascriptInterface(this, "App")
+
+        webView.setOnScrollChangeListener(object : ScrollWebView.OnScrollChangeListener {
+            override fun onPageEnd(l: Int, t: Int, oldl: Int, oldt: Int) {
+            }
+
+            override fun onPageTop(l: Int, t: Int, oldl: Int, oldt: Int) {
+            }
+
+            override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+                try {
+                    webView.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height);")
+                } catch(e: Exception) {
+                }
+            }
+
+        })
 
         try {
             webView.loadUrl(article?._url)
@@ -198,18 +217,22 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
         fragment!!.recyclerView!!.addHeaderView(webView)
 
         runDelayed({
+            Logger.e("runDelayed")
             cancelLoadProgerss()
-        }, 5000)
+        }, 10000)
     }
 
     var hasResize = false
     @JavascriptInterface
     fun resize(height: Float) {
+
         runOnUIThread({
             webView.layoutParams.width = resources.displayMetrics.widthPixels
             webView.layoutParams.height = (height * resources.displayMetrics.density).toInt()
-            hasResize = true
-            fragment!!.loadRefresh()
+            if (!hasResize) {
+                hasResize = true
+                fragment!!.loadRefresh()
+            }
 
         })
     }
@@ -230,8 +253,11 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
     }
 
     var hasInit = false
+    var isLoading = false
     override fun loadData() {
-        if (!hasInit && article != null && hasResize) {
+        if (isLoading) return
+
+        if (!hasInit && article != null) {
             hasInit = true
             var comments = article!!.comments
 
@@ -256,11 +282,21 @@ class ArticleDetailActivity : BaseListActivity<CommentModel, CommentHolder>() {
             return
         }
 
-        var params = App.createParams
+        isLoading = true
+
+        val params = App.createParams
         params.put("json", "get_post")
         params.put("id", articleID)
-        HMRequest.go<ArticleModel>(params = params) {
+        HMRequest.go<ArticleModel>(params = params, needCallBack = true) {
+            isLoading = false
             article = it?.post
+
+            if (it == null || article == null) {
+                showTips(R.drawable.tips_error, "服务器开小差了")
+                finish()
+                return@go
+            }
+
             initUI()
             //在webView高度不确定前不设置评论数据
             if (!hasResize) {

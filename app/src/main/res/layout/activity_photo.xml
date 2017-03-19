@@ -19,7 +19,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:background="@drawable/tips_bg"
         android:src="@drawable/icon_back"/>
 
     <ImageView
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_margin="20dp"
-        android:background="@drawable/tips_bg"
         android:src="@drawable/icon_save"
         android:visibility="gone"/>
 
@@ -39,7 +37,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
-        android:background="@drawable/tips_bg"
         android:padding="10dp"
         android:textColor="#ffffff"
         android:textSize="16sp"

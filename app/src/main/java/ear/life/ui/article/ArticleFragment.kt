@@ -4,17 +4,15 @@ package ear.life.ui.article
 import android.content.Intent
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
+import com.google.gson.Gson
 import com.hm.hmlibrary.ui.article.CategorieListModel
 import com.hm.library.app.Cacher
 import com.hm.library.base.BaseFragment
-import com.hm.library.http.HMRequest
 import com.hm.library.resource.draggridview.DragGridActivity
 import com.hm.library.resource.view.TipsToast
 import ear.life.R
-import ear.life.http.HttpServerPath
 import kotlinx.android.synthetic.main.fragment_article.*
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.support.v4.act
 import org.jetbrains.anko.support.v4.startActivity
 import java.util.*
 
@@ -43,16 +41,20 @@ class ArticleFragment(override var layoutResID: Int = R.layout.fragment_article)
 
         //好吧, 都没有的话, 我们查询API
         if (channelList == null || channelList!!.size == 0) {
+            //v1.0.6版本去掉用户自定义功能
+            val json = "{'status':'ok','categories':[{'id':-1,'title':'\u6700\u65b0'},{'id':22,'title':'\u4e50\u5668'},{'id':64,'title':'\u89c6\u9891'},{'id':59,'title':'\u6563\u6587'},{'id':2,'title':'\u7535\u53f0'},{'id':45,'title':'\u5fc3\u60c5'},{'id':10,'title':'\u66f2\u98ce'}]}"
+            channelList = Gson().fromJson(json, CategorieListModel::class.java).categories
+            initUI()
 
-            HMRequest.go<CategorieListModel>(HttpServerPath.Server_Category,activity = act) {
-                channelList = it?.categories
-                //在最前面加一个"最新"的频道, 按发布时间来查看
+//            HMRequest.go<CategorieListModel>(HttpServerPath.Server_Category, activity = act) {
+//                channelList = it?.categories
+            //在最前面加一个"最新"的频道, 按发布时间来查看
 //                val all = CategorieListModel.CategorieModel(-1, "", "最新", "", 0, -1)
 //                channelList!!.add(0, all)
-                //将频道保存到本地
-                //Cacher[Channel1st] = channelList
-                initUI()
-            }
+            //将频道保存到本地
+            //Cacher[Channel1st] = channelList
+//                initUI()
+//            }
 
         } else {
             //上面的情况任意一种查询到频道信息后, 填充UI
